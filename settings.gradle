@@ -1,0 +1,3 @@
+include ':scene'
+include ':app'
+rootProject.name = "AssimpDemo"
