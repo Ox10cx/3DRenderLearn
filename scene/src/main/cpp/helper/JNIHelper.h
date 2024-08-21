@@ -16,7 +16,8 @@
 class JNIHelper {
 
 public:
-    JNIHelper(JNIEnv *env, jobject obj, jobject assetManager, jstring pathToInternalDir);
+    JNIHelper(JNIEnv *env, jobject assetManager, const std::string& pathToInternalDir);
+
 
     ~JNIHelper();
 

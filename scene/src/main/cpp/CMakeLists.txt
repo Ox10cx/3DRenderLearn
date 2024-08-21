@@ -3,7 +3,7 @@
 
 # Sets the minimum version of CMake required to build the native library.
 
-cmake_minimum_required(VERSION 3.18.1)
+cmake_minimum_required(VERSION 3.10.2)
 
 # Declares and names the project.
 
@@ -14,7 +14,10 @@ set(jnilibs "${CMAKE_SOURCE_DIR}/../jniLibs")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++14 -fexceptions -frtti")
 
 
+include(vendor/jni.hpp.cmake)
+
 include_directories(
+        vendor/jni.hpp/include
         include
         include/assimp
         include/glm
@@ -34,7 +37,7 @@ file(GLOB src-files
         camera/GLCamera.cpp
         model/AssimpLoader.cpp
         model/AssimpModel.cpp
-        SceneRender.cpp)
+        *.cpp)
 
 # Creates and names a library, sets it as either STATIC
 # or SHARED, and provides the relative paths to its source code.
@@ -75,6 +78,8 @@ set_target_properties(assimp PROPERTIES IMPORTED_LOCATION ${jnilibs}/${ANDROID_A
 
 add_library(opencv4 SHARED IMPORTED)
 set_target_properties(opencv4 PROPERTIES IMPORTED_LOCATION ${jnilibs}/${ANDROID_ABI}/libopencv_java4.so)
+
+
 
 set(third-party-libs
         assimp

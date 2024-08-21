@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".AssimpActivity">
 
-    <com.gx.kotlin.scene.view.SceneRenderGLSurfaceView
+    <com.gx.kotlin.scene.roam.RoamView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/render"

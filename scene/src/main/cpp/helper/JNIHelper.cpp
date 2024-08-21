@@ -6,20 +6,23 @@
 #include "FileHelper.h"
 #include <android/asset_manager_jni.h>
 
-JNIHelper::JNIHelper(JNIEnv *env, jobject obj, jobject assetManager, jstring pathToInternalDir) {
+JNIHelper::JNIHelper(JNIEnv *env, jobject assetManager, const std::string& pathToInternalDir) {
     // get a native instance of the asset manager
     // assetManager is passed from Java and should not be garbage collected!
     m_pApkAssetManager = AAssetManager_fromJava(env, assetManager);
 
     //Save app internal data storage path -- we will extract assets and save here
-    const char *cPathToInternalDir;
-    cPathToInternalDir = env->GetStringUTFChars(pathToInternalDir, NULL ) ;
-    m_sApkInternalPath = std::string(cPathToInternalDir);
-    env->ReleaseStringUTFChars(pathToInternalDir, cPathToInternalDir);
+//    const char *cPathToInternalDir;
+//    cPathToInternalDir = env->GetStringUTFChars(pathToInternalDir, NULL ) ;
+//    m_sApkInternalPath = std::string(cPathToInternalDir);
+//    env->ReleaseStringUTFChars(pathToInternalDir, cPathToInternalDir);
+
+    m_sApkInternalPath = pathToInternalDir;
 
     //mutex for thread safety
     pthread_mutex_init(&m_ThreadMutex, NULL );
 }
+
 
 JNIHelper::~JNIHelper()
 {

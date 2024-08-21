@@ -1,27 +1,22 @@
 package com.gx.kotlin.assimpdemo
 
-import android.content.res.AssetManager
 import android.os.Bundle
-import com.gx.kotlin.scene.NativeRenderScene
-import com.gx.kotlin.scene.gesture.Gesture
-import com.gx.kotlin.scene.view.SceneRenderGLSurfaceView
+import com.gx.kotlin.scene.roam.RoamView
 
 class AssimpActivity : BaseActivity() {
-    lateinit var mRenderView : SceneRenderGLSurfaceView
-    lateinit var mGesture : Gesture
-
+    lateinit var mRenderView : RoamView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_assimp)
 
         mRenderView = findViewById(R.id.render)
-        var assetManager = assets
-        var path = filesDir.absolutePath
-        NativeRenderScene.onModelCreated(assetManager, path)
-
-        mGesture = Gesture(this)
-        mRenderView.setOnTouchListener(mGesture.TwoFingerGestureListener)
+//        var assetManager = assets
+//        var path = filesDir.absolutePath
+//        NativeRenderScene.onModelCreated(assetManager, path)
+//
+//        mGesture = Gesture(this)
+//        mRenderView.setOnTouchListener(mGesture.TwoFingerGestureListener)
     }
 
     override fun onResume() {
@@ -36,5 +31,6 @@ class AssimpActivity : BaseActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        mRenderView.onDestroy()
     }
 }
