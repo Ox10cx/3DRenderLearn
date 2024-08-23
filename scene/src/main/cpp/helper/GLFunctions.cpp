@@ -4,6 +4,7 @@
 
 #include "GLFunctions.h"
 #include "RenderLogger.h"
+#include "gl_functions.h"
 #include <sstream>
 
 
@@ -14,6 +15,8 @@ void GLInit() {
 
     // White background
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+
+//    GLCall(glClear(1));
 
     // Enable depth test
     glEnable(GL_DEPTH_TEST);

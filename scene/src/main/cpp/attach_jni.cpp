@@ -2,7 +2,8 @@
 // Created by 龚喜 on 2024/8/18.
 //
 
-#include "jni.h"
+#include "attach_jni.h"
+#include "log.h"
 
 
 JavaVM* theJVM;
@@ -20,10 +21,12 @@ bool attach_jni_thread(JavaVM* vm, JNIEnv** env, std::string threadName) {
     ret = vm->GetEnv(reinterpret_cast<void **>(env), JNI_VERSION_1_6);
     if (ret != JNI_OK) {
         if (ret != JNI_EDETACHED) {
+            Log::Error(Event::JNI, "GetEnv() failed with %i", ret);
             throw std::runtime_error("GetEnv() failed");
         } else {
             ret = vm->AttachCurrentThread(env, &args);
             if (ret != JNI_OK) {
+                Log::Error(Event::JNI, "AttachCurrentThread() failed with %i", ret);
                 throw std::runtime_error("AttachCurrentThread() failed");
             }
             detach = true;
@@ -41,6 +44,7 @@ void detach_jni_thread(JavaVM* vm, JNIEnv** env, bool detach) {
 
         jint ret;
         if ((ret = vm->DetachCurrentThread()) != JNI_OK) {
+            Log::Error(Event::JNI, "DetachCurrentThread() failed with %i", ret);
             throw std::runtime_error("DetachCurrentThread() failed");
         }
     }

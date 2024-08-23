@@ -2,8 +2,8 @@
 // Created by 龚喜 on 2024/8/19.
 //
 
-#ifndef ASSIMPDEMO_NATIVEROAMVIEW_H
-#define ASSIMPDEMO_NATIVEROAMVIEW_H
+#ifndef ASSIMPDEMO_NATIVE_ROAM_VIEW_H
+#define ASSIMPDEMO_NATIVE_ROAM_VIEW_H
 
 
 #include <jni/jni.hpp>
@@ -30,4 +30,4 @@ private:
 };
 
 
-#endif //ASSIMPDEMO_NATIVEROAMVIEW_H
+#endif //ASSIMPDEMO_NATIVE_ROAM_VIEW_H

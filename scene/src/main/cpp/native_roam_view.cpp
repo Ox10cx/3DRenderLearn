@@ -2,12 +2,12 @@
 // Created by 龚喜 on 2024/8/19.
 //
 
-#include "NativeRoamView.h"
+#include "native_roam_view.h"
 #include "RenderLogger.h"
 
 
 NativeRoamView::NativeRoamView(jni::JNIEnv& _env,
-                       const jni::Object<NativeRoamView>& obj)
+                               const jni::Object<NativeRoamView>& obj)
 {
 
 }
@@ -26,12 +26,12 @@ void NativeRoamView::registerNative(JNIEnv& env) {
 
     // Register the peer
     jni::RegisterNativePeer<NativeRoamView>(env, javaClass, "nativePtr",
-                                        jni::MakePeer<NativeRoamView, const jni::Object<NativeRoamView>&>,
-                                        "nativeInitialize", "nativeDestroy",
-                                        METHOD(&NativeRoamView::moveBy, "nativeMoveBy"),
-                                        METHOD(&NativeRoamView::setBearingXY, "nativeSetBearingXY"),
-                                        METHOD(&NativeRoamView::setPitch, "nativeSetPitch"),
-                                        METHOD(&NativeRoamView::setZoom, "nativeSetZoom"));
+                                            jni::MakePeer<NativeRoamView, const jni::Object<NativeRoamView>&>,
+                                            "nativeInitialize", "nativeDestroy",
+                                            METHOD(&NativeRoamView::moveBy, "nativeMoveBy"),
+                                            METHOD(&NativeRoamView::setBearingXY, "nativeSetBearingXY"),
+                                            METHOD(&NativeRoamView::setPitch, "nativeSetPitch"),
+                                            METHOD(&NativeRoamView::setZoom, "nativeSetZoom"));
 }
 
 void NativeRoamView::moveBy(jni::JNIEnv&, jni::jdouble dx, jni::jdouble dy, jni::jlong duration) {

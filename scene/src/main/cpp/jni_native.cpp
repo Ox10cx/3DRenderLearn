@@ -3,20 +3,19 @@
 //
 #include "jni_native.h"
 #include <system_error>
-#include "RenderLogger.h"
-#include "RoamRender.h"
-#include "NativeRoamView.h"
+#include "roam_render.h"
+#include "native_roam_view.h"
+#include "logger.h"
 void registerNatives(JavaVM* vm) {
     theJVM = vm;
     jni::JNIEnv& env = jni::GetEnv(*vm, jni::jni_version_1_6);
 
+    Logger::registerNative(env);
 //    SceneRender::registerNative(env);
     RoamRender::registerNative(env);
     NativeRoamView::registerNative(env);
-    LOGE( "GetEnv Success");
 }
 
 
 void unregisterNatives(JavaVM* vm) {
-    LOGI( "unregisterNatives");
 }

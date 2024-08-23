@@ -4,7 +4,8 @@
 
 #pragma once
 
-#include "jni.h"
+//#include "jni.h"
+#include "attach_jni.h"
 
 void registerNatives(JavaVM* vm);
 void unregisterNatives(JavaVM* vm);

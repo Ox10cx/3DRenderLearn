@@ -9,15 +9,21 @@ cmake_minimum_required(VERSION 3.10.2)
 
 project("scene")
 
+# 增加预定义宏
+add_definitions(-DDEBUG)
+
 set(jnilibs "${CMAKE_SOURCE_DIR}/../jniLibs")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++14 -fexceptions -frtti")
 
-
 include(vendor/jni.hpp.cmake)
+include(roamgl/roamgl.cmake)
 
 include_directories(
         vendor/jni.hpp/include
+        roamgl/utils
+        roamgl/glframework
+        utils
         include
         include/assimp
         include/glm
@@ -87,6 +93,7 @@ set(third-party-libs
 
 target_link_libraries( # Specifies the target library.
                        native-lib
+                       roamgl
                        ${third-party-libs}
                        ${ATLAS_ENGINE_SYSTEM_LIBS}
                        # Links the target library to the log library

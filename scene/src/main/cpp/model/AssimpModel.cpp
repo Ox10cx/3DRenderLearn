@@ -7,6 +7,7 @@
 #include <opencv2/opencv.hpp>
 #include "JNIHelper.h"
 
+
 AssimpModel::AssimpModel() {
     LOGD("ModelAssimp::ModelAssimp");
 
@@ -39,20 +40,20 @@ void AssimpModel::PerformGLInits() {
 
     GLInit();
 
-    m_pAssimpLoader = new AssimpLoader();
-
-    // extract the OBJ and companion files from assets
-    std::string objFilename, mtlFilename, texFilename;
-    bool isFilesPresent  =
-            gHelperObject->ExtractAssetReturnFilename("amenemhat/amenemhat.obj", objFilename) &&
-            gHelperObject->ExtractAssetReturnFilename("amenemhat/amenemhat.mtl", mtlFilename) &&
-            gHelperObject->ExtractAssetReturnFilename("amenemhat/amenemhat.jpg", texFilename);
-    if( !isFilesPresent ) {
-        LOGE("Model %s does not exist!", objFilename.c_str());
-        return;
-    }
-
-    m_pAssimpLoader->Load3DModel(objFilename);
+//    m_pAssimpLoader = new AssimpLoader();
+//
+//    // extract the OBJ and companion files from assets
+//    std::string objFilename, mtlFilename, texFilename;
+//    bool isFilesPresent  =
+//            gHelperObject->ExtractAssetReturnFilename("amenemhat/amenemhat.obj", objFilename) &&
+//            gHelperObject->ExtractAssetReturnFilename("amenemhat/amenemhat.mtl", mtlFilename) &&
+//            gHelperObject->ExtractAssetReturnFilename("amenemhat/amenemhat.jpg", texFilename);
+//    if( !isFilesPresent ) {
+//        LOGE("Model %s does not exist!", objFilename.c_str());
+//        return;
+//    }
+//
+//    m_pAssimpLoader->Load3DModel(objFilename);
 
     CheckGLError("ModelAssimp::PerformGLInits");
 }
@@ -66,8 +67,8 @@ void AssimpModel::Render() {
     // clear the screen
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glm::mat4 mvpMat = m_pGLCamera->GetMVP();
-    m_pAssimpLoader->Render3DModel(&mvpMat);
+//    glm::mat4 mvpMat = m_pGLCamera->GetMVP();
+//    m_pAssimpLoader->Render3DModel(&mvpMat);
 
     CheckGLError("ModelAssimp::Render");
 
@@ -83,7 +84,7 @@ void AssimpModel::SetViewport(int width, int height) {
     glViewport(0, 0, width, height);
     CheckGLError("Cube::SetViewport");
 
-    m_pGLCamera->SetAspectRatio((float) width / height);
+//    m_pGLCamera->SetAspectRatio((float) width / height);
 }
 
 

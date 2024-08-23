@@ -2,8 +2,8 @@
 // Created by 龚喜 on 2024/8/18.
 //
 
-#ifndef ASSIMPDEMO_SCENERENDER_H
-#define ASSIMPDEMO_SCENERENDER_H
+#ifndef ASSIMPDEMO_SCENE_RENDER_H
+#define ASSIMPDEMO_SCENE_RENDER_H
 
 #include "jni.h"
 
@@ -44,4 +44,4 @@ private:
 
 };
 
-#endif //ASSIMPDEMO_SCENERENDER_H
+#endif //ASSIMPDEMO_SCENE_RENDER_H

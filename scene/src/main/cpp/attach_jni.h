@@ -2,8 +2,8 @@
 // Created by 龚喜 on 2024/8/18.
 //
 
-#ifndef ASSIMPDEMO_JNI_H
-#define ASSIMPDEMO_JNI_H
+#ifndef ASSIMPDEMO_ATTACH_JNI_H
+#define ASSIMPDEMO_ATTACH_JNI_H
 
 #include <string>
 #include <jni/jni.hpp>
@@ -18,4 +18,4 @@ void detach_jni_thread(JavaVM* vm, JNIEnv** env, bool detach);
 
 
 
-#endif //ASSIMPDEMO_JNI_H
+#endif //ASSIMPDEMO_ATTACH_JNI_H

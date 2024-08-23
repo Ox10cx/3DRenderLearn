@@ -2,8 +2,8 @@
 // Created by 龚喜 on 2024/8/18.
 //
 
-#ifndef ASSIMPDEMO_ROAMRENDER_H
-#define ASSIMPDEMO_ROAMRENDER_H
+#ifndef ASSIMPDEMO_ROAM_RENDER_H
+#define ASSIMPDEMO_ROAM_RENDER_H
 
 #include <jni/jni.hpp>
 #include "AssetManager.h"
@@ -34,4 +34,4 @@ private:
 };
 
 
-#endif //ASSIMPDEMO_ROAMRENDER_H
+#endif //ASSIMPDEMO_ROAM_RENDER_H

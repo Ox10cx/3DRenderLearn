@@ -1,4 +1,4 @@
-#include "SceneRender.h"
+#include "scene_render.h"
 //#include "RenderLogger.h"
 //#include "JNIHelper.h"
 //#include "AssimpModel.h"
