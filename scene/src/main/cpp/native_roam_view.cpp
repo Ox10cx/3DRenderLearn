@@ -4,12 +4,17 @@
 
 #include "native_roam_view.h"
 #include "RenderLogger.h"
+#include "roam_render.h"
+#include "GLCamera.h"
 
 
 NativeRoamView::NativeRoamView(jni::JNIEnv& _env,
-                               const jni::Object<NativeRoamView>& obj)
+                               const jni::Object<NativeRoamView>& obj,
+                               const jni::Object<RoamRender>& jMapRender)
+                               :mRoamRenderer(RoamRender::getNativePeer(_env, jMapRender))
 {
-
+    GLCamera camera;
+    mRoamRenderer.update(std::make_shared<GLCamera>(std::move(camera)));
 }
 
 NativeRoamView::~NativeRoamView()
@@ -26,7 +31,7 @@ void NativeRoamView::registerNative(JNIEnv& env) {
 
     // Register the peer
     jni::RegisterNativePeer<NativeRoamView>(env, javaClass, "nativePtr",
-                                            jni::MakePeer<NativeRoamView, const jni::Object<NativeRoamView>&>,
+                                            jni::MakePeer<NativeRoamView, const jni::Object<NativeRoamView>&, const jni::Object<RoamRender>&>,
                                             "nativeInitialize", "nativeDestroy",
                                             METHOD(&NativeRoamView::moveBy, "nativeMoveBy"),
                                             METHOD(&NativeRoamView::setBearingXY, "nativeSetBearingXY"),

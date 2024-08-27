@@ -2,7 +2,7 @@
 // Created by 龚喜 on 1/27/24.
 //
 
-#include "Shader.h"
+#include "ShaderS.h"
 #include <iostream>
 #include <fstream>
 #include "JNIHelper.h"
@@ -16,11 +16,11 @@ bool ReadShaderCode(std::string & shaderCode, std::string & shaderFileName) {
 
     // android shaders are stored in assets
     // read them using MyJNIHelper
-    bool isFilePresent = gHelperObject->ExtractAssetReturnFilename(shaderFileName,
-                                                                   shaderFileName);
-    if( !isFilePresent ) {
-        return false;
-    }
+//    bool isFilePresent = gHelperObject->ExtractAssetReturnFilename(shaderFileName,
+//                                                                   shaderFileName);
+//    if( !isFilePresent ) {
+//        return false;
+//    }
 
     std::ifstream shaderStream(shaderFileName.c_str(), std::ios::in);
     if (shaderStream.is_open()) {

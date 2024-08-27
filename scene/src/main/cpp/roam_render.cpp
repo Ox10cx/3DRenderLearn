@@ -3,13 +3,9 @@
 //
 
 #include "roam_render.h"
-#include "JNIHelper.h"
-#include "AssimpModel.h"
 #include "roamgl/utils/log.h"
+#include <android/asset_manager_jni.h>
 
-
-JNIHelper *gHelperObject = NULL;
-AssimpModel *gAssimpObject = NULL;
 
 
 RoamRender::RoamRender(jni::JNIEnv& _env,
@@ -17,10 +13,10 @@ RoamRender::RoamRender(jni::JNIEnv& _env,
                        const jni::Object<AssetManager>& assetManager,
                        const jni::String& path)
 {
-
-    gHelperObject = new JNIHelper(&_env, jni::Unwrap(assetManager.get()), jni::Make<std::string>(_env, path));
-    gAssimpObject = new AssimpModel();
     Log::Info(Event::Render, " RoamRender initialize %s", jni::Make<std::string>(_env, path).c_str());
+    mAssetManager = AAssetManager_fromJava(&_env, jni::Unwrap(assetManager.get()));
+    mPath = jni::Make<std::string>(_env, path);
+
 }
 
 RoamRender::~RoamRender()
@@ -29,6 +25,53 @@ RoamRender::~RoamRender()
 }
 
 
+void RoamRender::onSurfaceCreated(JNIEnv& env)
+{
+    Log::Info(Event::Render, "onSurfaceCreated enter");
+    renderer.reset();
+    renderer = std::make_unique<Renderer>(mAssetManager, mPath);
+}
+
+void RoamRender::onRendererReset(JNIEnv& env)
+{
+
+}
+
+void RoamRender::onSurfaceChanged(JNIEnv&, jint width, jint height)
+{
+    Log::Info(Event::Render, "OnSurfaceChange width: %d, height: %d", width, height);
+}
+
+void RoamRender::onSurfaceDestroyed(JNIEnv&) {
+
+}
+
+void RoamRender::update(std::shared_ptr<GLCamera> camera) {
+    // Lock on the parameters
+    std::lock_guard<std::mutex> lock(updateMutex);
+    mCamera = std::move(camera);
+};
+
+
+void RoamRender::render(JNIEnv& env)
+{
+    Log::Info(Event::Render, " OnDrawFrame ENTER");
+
+    assert (renderer);
+    std::shared_ptr<GLCamera> params;
+    {
+        // Lock on the parameters
+        std::unique_lock<std::mutex> lock(updateMutex);
+        if (!mCamera) return;
+
+        // Hold on to the update parameters during render
+        params = mCamera;
+    }
+
+    renderer->render();
+
+    // todo 这里可以考虑相机参数传过来
+}
 
 void RoamRender::registerNative(JNIEnv& env) {
     // Lookup the class
@@ -45,48 +88,19 @@ void RoamRender::registerNative(JNIEnv& env) {
                                         METHOD(&RoamRender::render, "nativeRender"),
                                         METHOD(&RoamRender::onRendererReset, "nativeReset"),
                                         METHOD(&RoamRender::onSurfaceCreated,
-                                                "nativeOnSurfaceCreated"),
+                                               "nativeOnSurfaceCreated"),
                                         METHOD(&RoamRender::onSurfaceChanged,
-                                                "nativeOnSurfaceChanged"),
+                                               "nativeOnSurfaceChanged"),
                                         METHOD(&RoamRender::onSurfaceDestroyed,
-                                                "nativeOnSurfaceDestroyed"));
+                                               "nativeOnSurfaceDestroyed"));
 }
 
-
-void RoamRender::onSurfaceCreated(JNIEnv& env)
-{
-    Log::Info(Event::Render, "onSurfaceCreated enter");
-    if (gAssimpObject == NULL) {
-        return;
-    }
-    gAssimpObject->PerformGLInits();
-}
-
-void RoamRender::onRendererReset(JNIEnv& env)
-{
-
-}
-
-void RoamRender::onSurfaceChanged(JNIEnv&, jint width, jint height)
-{
-    Log::Info(Event::Render, "OnSurfaceChange width: %d, height: %d", width, height);
-    if (gAssimpObject == NULL) {
-        return;
-    }
-    gAssimpObject->SetViewport(width, height);
-}
-
-void RoamRender::onSurfaceDestroyed(JNIEnv&) {
-
-}
-
-void RoamRender::render(JNIEnv& env)
-{
-    Log::Info(Event::Render, " OnDrawFrame ENTER");
-    if (gAssimpObject == NULL) {
-        return;
-    }
-    gAssimpObject->Render();
+RoamRender& RoamRender::getNativePeer(JNIEnv& env, const jni::Object<RoamRender>& jObject) {
+    static auto& javaClass = jni::Class<RoamRender>::Singleton(env);
+    static auto field = javaClass.GetField<jlong>(env, "nativePtr");
+    RoamRender* roamRenderer = reinterpret_cast<RoamRender*>(jObject.Get(env, field));
+    assert(roamRenderer != nullptr);
+    return *roamRenderer;
 }
 
 

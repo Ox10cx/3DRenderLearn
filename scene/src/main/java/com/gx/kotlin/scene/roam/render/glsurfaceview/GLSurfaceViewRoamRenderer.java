@@ -1,5 +1,6 @@
 package com.gx.kotlin.scene.roam.render.glsurfaceview;
 
+import static android.opengl.GLSurfaceView.RENDERMODE_CONTINUOUSLY;
 import static android.opengl.GLSurfaceView.RENDERMODE_WHEN_DIRTY;
 
 import android.content.Context;
@@ -20,9 +21,10 @@ public class GLSurfaceViewRoamRenderer extends RoamRender implements GLSurfaceVi
                                      RoamGLSurfaceView glSurfaceView) {
         super(context);
         this.glSurfaceView = glSurfaceView;
-        glSurfaceView.setEGLContextClientVersion(2);
+        glSurfaceView.setEGLContextClientVersion(3);
         glSurfaceView.setRenderer(this);
         glSurfaceView.setRenderMode(RENDERMODE_WHEN_DIRTY);
+//        glSurfaceView.setRenderMode(RENDERMODE_CONTINUOUSLY);
         glSurfaceView.setPreserveEGLContextOnPause(true);
         glSurfaceView.setDetachedListener(new RoamGLSurfaceView.OnGLSurfaceViewDetachedListener() {
             @Override

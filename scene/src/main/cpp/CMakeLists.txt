@@ -39,7 +39,7 @@ file(GLOB src-files
         helper/*.cpp
         helper/FileHelper.cpp
         helper/JNIHelper.cpp
-        shader/Shader.cpp
+        shader/ShaderS.cpp
         camera/GLCamera.cpp
         model/AssimpLoader.cpp
         model/AssimpModel.cpp

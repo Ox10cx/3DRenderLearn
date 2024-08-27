@@ -8,13 +8,15 @@
 
 #include <jni/jni.hpp>
 
+class RoamRender;
+
 class NativeRoamView {
 public:
     static constexpr auto Name() { return "com/gx/kotlin/scene/roam/NativeRoamView"; };
 
     static void registerNative(JNIEnv& env);
 
-    NativeRoamView(jni::JNIEnv& _env, const jni::Object<NativeRoamView>&);
+    NativeRoamView(jni::JNIEnv&, const jni::Object<NativeRoamView>&, const jni::Object<RoamRender>&);
 
     ~NativeRoamView();
 
@@ -26,6 +28,9 @@ private:
     void setPitch(jni::JNIEnv&, jni::jdouble, jni::jlong);
 
     void setZoom(jni::JNIEnv&, jni::jdouble, jni::jdouble, jni::jdouble, jni::jlong);
+
+private:
+    RoamRender& mRoamRenderer;
 
 };
 

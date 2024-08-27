@@ -12,11 +12,12 @@
  * Basic initializations for GL.
  */
 void GLInit() {
+    GLCall(glClear(1));
 
     // White background
     glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
-//    GLCall(glClear(1));
+    GLCall(glClear(-1));
 
     // Enable depth test
     glEnable(GL_DEPTH_TEST);

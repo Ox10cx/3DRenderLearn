@@ -6,7 +6,7 @@
 #define ASSIMPDEMO_LOGGER_H
 
 #include <jni/jni.hpp>
-#include "utils/event.h"
+#include "roamgl/utils/event.h"
 
 class Logger {
 public:

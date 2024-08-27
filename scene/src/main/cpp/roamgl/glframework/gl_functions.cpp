@@ -3,7 +3,7 @@
 //
 
 #include "gl_functions.h"
-#include <GLES2/gl2.h>
+#include <GLES3/gl3.h>
 #include "log.h"
 
 

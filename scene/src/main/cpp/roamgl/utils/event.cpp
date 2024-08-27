@@ -19,5 +19,6 @@ MBGL_DEFINE_ENUM(Event, {
     { Event::OpenGL, "OpenGL" },
     { Event::JNI, "JNI" },
     { Event::Android, "Android" },
+    { Event::File, "File" },
     { Event(-1), "Unknown" },
 });

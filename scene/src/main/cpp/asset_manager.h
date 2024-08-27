@@ -2,8 +2,8 @@
 // Created by 龚喜 on 2024/8/19.
 //
 
-#ifndef ASSIMPDEMO_ASSETMANAGER_H
-#define ASSIMPDEMO_ASSETMANAGER_H
+#ifndef ASSIMPDEMO_ASSET_MANAGER_H
+#define ASSIMPDEMO_ASSET_MANAGER_H
 
 class AssetManager {
 public:
@@ -12,4 +12,4 @@ public:
     };
 };
 
-#endif //ASSIMPDEMO_ASSETMANAGER_H
+#endif //ASSIMPDEMO_ASSET_MANAGER_H

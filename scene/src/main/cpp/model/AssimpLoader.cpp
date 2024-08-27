@@ -3,7 +3,7 @@
 //
 
 #include "AssimpLoader.h"
-#include "Shader.h"
+#include "ShaderS.h"
 #include "FileHelper.h"
 #include <opencv2/opencv.hpp>
 

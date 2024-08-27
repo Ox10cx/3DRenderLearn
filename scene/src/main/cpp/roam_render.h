@@ -6,7 +6,11 @@
 #define ASSIMPDEMO_ROAM_RENDER_H
 
 #include <jni/jni.hpp>
-#include "AssetManager.h"
+#include <android/asset_manager.h>
+#include "asset_manager.h"
+#include "renderer.h"
+#include "GLCamera.h"
+
 
 class RoamRender {
 public:
@@ -14,10 +18,13 @@ public:
 
     static void registerNative(JNIEnv& env);
 
+    static RoamRender& getNativePeer(JNIEnv&, const jni::Object<RoamRender>&);
+
     RoamRender(jni::JNIEnv& _env, const jni::Object<RoamRender>&, const jni::Object<AssetManager>& assetManager, const jni::String& path);
 
     ~RoamRender();
 
+    void update(std::shared_ptr<GLCamera>);
 
 private:
 
@@ -30,6 +37,15 @@ private:
     void onRendererReset(JNIEnv&);
 
     void render(JNIEnv&);
+
+private:
+    AAssetManager* mAssetManager;
+    std::string mPath;
+
+    std::shared_ptr<GLCamera> mCamera;
+    std::mutex updateMutex;
+    std::unique_ptr<Renderer> renderer;
+
 
 };
 

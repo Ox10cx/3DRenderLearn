@@ -19,7 +19,7 @@ public final class NativeRoamView implements NativeRoam {
     public NativeRoamView(final Context context, final RoamRender roamRender) {
         this.pixelRatio = context.getResources().getDisplayMetrics().density;
         this.mRoamRender = roamRender;
-        nativeInitialize(this);
+        nativeInitialize(this, mRoamRender);
     }
 
     @Override
@@ -43,7 +43,7 @@ public final class NativeRoamView implements NativeRoam {
     }
 
 
-    private native void nativeInitialize(NativeRoamView nativeRoamView);
+    private native void nativeInitialize(NativeRoamView nativeRoamView, RoamRender mapRenderer);
 
     private native void nativeDestroy();
 

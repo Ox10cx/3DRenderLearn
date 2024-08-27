@@ -20,7 +20,8 @@ enum class Event : uint8_t {
     Render,
     OpenGL,
     JNI,
-    Android
+    Android,
+    File,
 };
 
 struct EventPermutation {
