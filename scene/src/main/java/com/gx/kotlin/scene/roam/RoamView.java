@@ -2,14 +2,13 @@ package com.gx.kotlin.scene.roam;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.gx.kotlin.scene.roam.render.RoamRender;
+import com.gx.kotlin.scene.roam.render.RoamRenderer;
 import com.gx.kotlin.scene.roam.render.glsurfaceview.GLSurfaceViewRoamRenderer;
 import com.gx.kotlin.scene.roam.render.glsurfaceview.RoamGLSurfaceView;
 
@@ -17,7 +16,7 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 public class RoamView extends FrameLayout {
-    private RoamRender mRoamRenderer;
+    private RoamRenderer mRoamRenderer;
     private NativeRoam mNativeRoamView;
     private RoamGestureDetector mRoamGestureDetector;
 

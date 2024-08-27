@@ -5,21 +5,21 @@ import android.graphics.PointF;
 
 import androidx.annotation.NonNull;
 
-import com.gx.kotlin.scene.roam.render.RoamRender;
+import com.gx.kotlin.scene.roam.render.RoamRenderer;
 
 public final class NativeRoamView implements NativeRoam {
 
-    private final RoamRender mRoamRender;
+    private final RoamRenderer mRoamRenderer;
 
     // Device density
     private final float pixelRatio;
 
     private long nativePtr = 0;
 
-    public NativeRoamView(final Context context, final RoamRender roamRender) {
+    public NativeRoamView(final Context context, final RoamRenderer roamRenderer) {
         this.pixelRatio = context.getResources().getDisplayMetrics().density;
-        this.mRoamRender = roamRender;
-        nativeInitialize(this, mRoamRender);
+        this.mRoamRenderer = roamRenderer;
+        nativeInitialize(this, mRoamRenderer);
     }
 
     @Override
@@ -43,7 +43,7 @@ public final class NativeRoamView implements NativeRoam {
     }
 
 
-    private native void nativeInitialize(NativeRoamView nativeRoamView, RoamRender mapRenderer);
+    private native void nativeInitialize(NativeRoamView nativeRoamView, RoamRenderer mapRenderer);
 
     private native void nativeDestroy();
 

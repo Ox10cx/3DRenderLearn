@@ -8,7 +8,7 @@
 
 #include <jni/jni.hpp>
 
-class RoamRender;
+class RoamRenderer;
 
 class NativeRoamView {
 public:
@@ -16,7 +16,7 @@ public:
 
     static void registerNative(JNIEnv& env);
 
-    NativeRoamView(jni::JNIEnv&, const jni::Object<NativeRoamView>&, const jni::Object<RoamRender>&);
+    NativeRoamView(jni::JNIEnv&, const jni::Object<NativeRoamView>&, const jni::Object<RoamRenderer>&);
 
     ~NativeRoamView();
 
@@ -30,7 +30,7 @@ private:
     void setZoom(jni::JNIEnv&, jni::jdouble, jni::jdouble, jni::jdouble, jni::jlong);
 
 private:
-    RoamRender& mRoamRenderer;
+    RoamRenderer& mRoamRenderer;
 
 };
 

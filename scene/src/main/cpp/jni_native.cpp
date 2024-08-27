@@ -3,7 +3,7 @@
 //
 #include "jni_native.h"
 #include <system_error>
-#include "roam_render.h"
+#include "roam_renderer.h"
 #include "native_roam_view.h"
 #include "logger.h"
 void registerNatives(JavaVM* vm) {
@@ -12,7 +12,7 @@ void registerNatives(JavaVM* vm) {
 
     Logger::registerNative(env);
 //    SceneRender::registerNative(env);
-    RoamRender::registerNative(env);
+    RoamRenderer::registerNative(env);
     NativeRoamView::registerNative(env);
 }
 

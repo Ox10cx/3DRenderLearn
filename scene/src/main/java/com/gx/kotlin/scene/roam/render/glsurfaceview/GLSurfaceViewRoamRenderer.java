@@ -1,6 +1,5 @@
 package com.gx.kotlin.scene.roam.render.glsurfaceview;
 
-import static android.opengl.GLSurfaceView.RENDERMODE_CONTINUOUSLY;
 import static android.opengl.GLSurfaceView.RENDERMODE_WHEN_DIRTY;
 
 import android.content.Context;
@@ -8,12 +7,12 @@ import android.opengl.GLSurfaceView;
 
 import androidx.annotation.NonNull;
 
-import com.gx.kotlin.scene.roam.render.RoamRender;
+import com.gx.kotlin.scene.roam.render.RoamRenderer;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-public class GLSurfaceViewRoamRenderer extends RoamRender implements GLSurfaceView.Renderer {
+public class GLSurfaceViewRoamRenderer extends RoamRenderer implements GLSurfaceView.Renderer {
     @NonNull
     private final RoamGLSurfaceView glSurfaceView;
 
@@ -78,5 +77,15 @@ public class GLSurfaceViewRoamRenderer extends RoamRender implements GLSurfaceVi
     @Override
     public void onDrawFrame(GL10 gl10) {
         super.onDrawFrame(gl10);
+    }
+
+    @Override
+    public void requestRender() {
+        glSurfaceView.requestRender();
+    }
+
+    @Override
+    public void queueEvent(Runnable runnable) {
+        glSurfaceView.queueEvent(runnable);
     }
 }
