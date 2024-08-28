@@ -9,16 +9,13 @@
 
 Renderer::Renderer(AAssetManager *assetManager_, const std::string& pathToInternalDir)
 {
-    const char* glVersion;
-    GLCall(glVersion = (const char*)glGetString(GL_VERSION));
-
-    const char* glslVersion;
-    GLCall(glslVersion = (const char*)glGetString(GL_SHADING_LANGUAGE_VERSION));
+    const char* glVersion = GLCall((const char*)glGetString(GL_VERSION));
+    const char* glslVersion = GLCall((const char*)glGetString(GL_SHADING_LANGUAGE_VERSION));
     Log::Info(Event::OpenGL, "OpenGL %s, GLSL %s", glVersion, glslVersion);
 
     mShader = std::make_unique<Shader>(assetManager_, pathToInternalDir, "shaders/texture.vert", "shaders/texture.frag");
     mGeometry = std::move(Geometry::createPlane(1.0f, 1.0f));
-    mTexture = std::make_unique<Texture>(assetManager_, pathToInternalDir, "textures/box.png", 0);
+    mTexture = std::make_unique<Texture>(assetManager_, pathToInternalDir, "textures/wall.jpg", 0);
 }
 
 Renderer::~Renderer()

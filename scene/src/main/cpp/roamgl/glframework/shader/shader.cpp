@@ -65,7 +65,7 @@ unsigned int Shader::compileShader(unsigned int type, const std::string& source)
     if (source.empty()) return 0;
 
     // 1、创建shader程序
-    GLCall(unsigned int id = glCreateShader(type));
+    unsigned int id = GLCall(glCreateShader(type));
 
     // 2、为shader程序输入shader代码
     const char* src = source.c_str();
@@ -106,7 +106,7 @@ void Shader::end()
 void Shader::setUniformValue(const std::string& name, float value)
 {
     // 通过名称拿到Uniform的位置
-    GLCall(GLuint locaiton = glGetUniformLocation(mProgram, name.c_str()));
+    GLuint locaiton = GLCall(glGetUniformLocation(mProgram, name.c_str()));
 
     // 通过location来更新Uniform变量
     GLCall(glUniform1f(locaiton, value));
@@ -115,7 +115,7 @@ void Shader::setUniformValue(const std::string& name, float value)
 void Shader::setUniformValue(const std::string& name, float* value)
 {
     // 通过名称拿到Uniform的位置
-    GLCall(GLuint locaiton = glGetUniformLocation(mProgram, name.c_str()));
+    GLuint locaiton = GLCall(glGetUniformLocation(mProgram, name.c_str()));
 
     // 通过location来更新Uniform变量
     GLCall(glUniform3fv(locaiton,  1, value));
@@ -124,7 +124,7 @@ void Shader::setUniformValue(const std::string& name, float* value)
 void Shader::setUniformValue(const std::string& name, const glm::vec3& value)
 {
     // 通过名称拿到Uniform的位置
-    GLCall(GLuint locaiton = glGetUniformLocation(mProgram, name.c_str()));
+    GLuint locaiton = GLCall(glGetUniformLocation(mProgram, name.c_str()));
 
     // 通过location来更新Uniform变量
     GLCall(glUniform3f(locaiton,  value.x, value.y, value.z));
@@ -132,7 +132,7 @@ void Shader::setUniformValue(const std::string& name, const glm::vec3& value)
 
 void Shader::setUniformValue(const std::string& name, int value) {
     // 通过名称拿到Uniform的位置
-    GLCall(GLuint locaiton = glGetUniformLocation(mProgram, name.c_str()));
+    GLuint locaiton = GLCall(glGetUniformLocation(mProgram, name.c_str()));
 
     // 通过location来更新Uniform变量
     GLCall(glUniform1i(locaiton, value));
@@ -140,21 +140,21 @@ void Shader::setUniformValue(const std::string& name, int value) {
 
 void Shader::setUniformValue(const std::string& name, const glm::mat4& value) {
     // 通过名称拿到Uniform的位置
-    GLCall(GLuint locaiton = glGetUniformLocation(mProgram, name.c_str()));
+    GLuint locaiton = GLCall(glGetUniformLocation(mProgram, name.c_str()));
     // opengl 和 glm 矩阵的存储方式都是列存储，所以不需要转置
     GLCall(glUniformMatrix4fv(locaiton, 1, GL_FALSE, glm::value_ptr(value)));
 }
 
 void Shader::setUniformValue(const std::string& name, const glm::mat3& value) {
     // 通过名称拿到Uniform的位置
-    GLCall(GLuint locaiton = glGetUniformLocation(mProgram, name.c_str()));
+    GLuint locaiton = GLCall(glGetUniformLocation(mProgram, name.c_str()));
     // opengl 和 glm 矩阵的存储方式都是列存储，所以不需要转置
     GLCall(glUniformMatrix3fv(locaiton, 1, GL_FALSE, glm::value_ptr(value)));
 }
 
 void Shader::setUniformValue(const std::string& name, const glm::mat4* value, int count) {
     // 通过名称拿到Uniform的位置
-    GLCall(GLuint locaiton = glGetUniformLocation(mProgram, name.c_str()));
+    GLuint locaiton = GLCall(glGetUniformLocation(mProgram, name.c_str()));
     // opengl 和 glm 矩阵的存储方式都是列存储，所以不需要转置
     GLCall(glUniformMatrix4fv(locaiton, count, GL_FALSE, glm::value_ptr(value[0])));
 }
