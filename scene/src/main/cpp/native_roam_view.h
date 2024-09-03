@@ -7,7 +7,10 @@
 
 
 #include <jni/jni.hpp>
+#include <roam/roam.h>
+#include <memory>
 
+class AndroidRendererFrontend;
 class RoamRenderer;
 
 class NativeRoamView {
@@ -16,11 +19,14 @@ public:
 
     static void registerNative(JNIEnv& env);
 
-    NativeRoamView(jni::JNIEnv&, const jni::Object<NativeRoamView>&, const jni::Object<RoamRenderer>&);
+    NativeRoamView(jni::JNIEnv&, const jni::Object<NativeRoamView>&, const jni::Object<RoamRenderer>&, jni::jfloat);
 
     ~NativeRoamView();
 
 private:
+
+    void resizeView(jni::JNIEnv&, int, int);
+
     void moveBy(jni::JNIEnv&, jni::jdouble, jni::jdouble, jni::jlong);
 
     void setBearingXY(jni::JNIEnv&, jni::jdouble, jni::jdouble, jni::jdouble, jni::jlong);
@@ -30,7 +36,14 @@ private:
     void setZoom(jni::JNIEnv&, jni::jdouble, jni::jdouble, jni::jdouble, jni::jlong);
 
 private:
+    std::unique_ptr<AndroidRendererFrontend> mRendererFrontend;
     RoamRenderer& mRoamRenderer;
+
+    float mPixelRatio;
+
+    int mWidth = 64;
+    int mHeight = 64;
+    std::unique_ptr<Roam> mRoam;
 
 };
 

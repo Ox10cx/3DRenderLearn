@@ -4,7 +4,7 @@
 
 #include "GLFunctions.h"
 #include "RenderLogger.h"
-#include "gl_functions.h"
+#include "../roamgl/gl/gl_functions.h"
 #include <sstream>
 
 

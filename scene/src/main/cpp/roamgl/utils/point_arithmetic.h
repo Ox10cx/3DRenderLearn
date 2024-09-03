@@ -1,0 +1,8 @@
+//
+// Created by gongxi on 2024/9/2.
+//
+
+#ifndef ASSIMPDEMO_POINT_ARITHMETIC_H
+#define ASSIMPDEMO_POINT_ARITHMETIC_H
+
+#endif //ASSIMPDEMO_POINT_ARITHMETIC_H

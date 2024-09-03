@@ -14,20 +14,28 @@ add_definitions(-DDEBUG)
 
 set(jnilibs "${CMAKE_SOURCE_DIR}/../jniLibs")
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++14 -fexceptions -frtti")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -fexceptions -frtti")
 
+include(vendor/assimp.cmake)
+include(vendor/glm.cmake)
+include(vendor/opencv.cmake)
 include(vendor/jni.hpp.cmake)
 include(roamgl/roamgl.cmake)
+include(application/application.cmake)
 
 include_directories(
         vendor/jni.hpp/include
+        vendor/assimp/include
+        vendor/glm/include
+        vendor/opencv2/include
         roamgl/utils
-        roamgl/glframework
+        roamgl/texture
+        roamgl/geometry
+        roamgl/gl
+        roamgl/renderer
+        roamgl/shader
+        application/camera
         utils
-        include
-        include/assimp
-        include/glm
-        include/opencv2
         helper
         shader
         camera
@@ -79,21 +87,22 @@ find_library( # Sets the name of the path variable.
 set(ATLAS_ENGINE_SYSTEM_LIBS android EGL GLESv2 GLESv3 m)
 
 
-add_library(assimp SHARED IMPORTED)
-set_target_properties(assimp PROPERTIES IMPORTED_LOCATION ${jnilibs}/${ANDROID_ABI}/libassimp.so)
+add_library(assimp-lib SHARED IMPORTED)
+set_target_properties(assimp-lib PROPERTIES IMPORTED_LOCATION ${jnilibs}/${ANDROID_ABI}/libassimp.so)
 
-add_library(opencv4 SHARED IMPORTED)
-set_target_properties(opencv4 PROPERTIES IMPORTED_LOCATION ${jnilibs}/${ANDROID_ABI}/libopencv_java4.so)
+add_library(opencv4-lib SHARED IMPORTED)
+set_target_properties(opencv4-lib PROPERTIES IMPORTED_LOCATION ${jnilibs}/${ANDROID_ABI}/libopencv_java4.so)
 
 
 
 set(third-party-libs
-        assimp
-        opencv4)
+        assimp-lib
+        opencv4-lib)
 
 target_link_libraries( # Specifies the target library.
                        native-lib
                        roamgl
+                       app
                        ${third-party-libs}
                        ${ATLAS_ENGINE_SYSTEM_LIBS}
                        # Links the target library to the log library

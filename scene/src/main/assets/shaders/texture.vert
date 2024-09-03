@@ -5,7 +5,9 @@ layout(location = 1) in vec2 aUv;
 
 out vec2 uv;
 
+uniform mat4 projectMatrix;
+
 void main() {
-    gl_Position = vec4(aPosition, 1.0);
+    gl_Position = projectMatrix * vec4(aPosition, 1.0);
     uv = aUv;
 }

@@ -8,7 +8,6 @@
 #include "log.h"
 #include "file_utils.h"
 
-
 Texture::Texture()
 {
 

@@ -7,16 +7,19 @@
 
 #include <android/asset_manager.h>
 #include <string>
-#include "shader/shader.h"
-#include "texture/texture.h"
+#include "shader.h"
+#include "texture.h"
 #include "gl_geometry.h"
+
+class UpdateParameters;
+
 
 class Renderer {
 public:
     Renderer(AAssetManager *assetManager_, const std::string& pathToInternalDir);
     ~Renderer();
 
-    void render();
+    void render(const UpdateParameters&);
 
 private:
     std::unique_ptr<Shader> mShader;

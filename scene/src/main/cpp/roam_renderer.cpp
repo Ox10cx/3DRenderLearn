@@ -30,8 +30,8 @@ RoamRenderer::~RoamRenderer()
 void RoamRenderer::onSurfaceCreated(JNIEnv& env)
 {
     Log::Info(Event::Render, "onSurfaceCreated enter");
-    renderer.reset();
-    renderer = std::make_unique<Renderer>(mAssetManager, mPath);
+    mRenderer.reset();
+    mRenderer = std::make_unique<Renderer>(mAssetManager, mPath);
 }
 
 void RoamRenderer::onRendererReset(JNIEnv& env)
@@ -39,8 +39,13 @@ void RoamRenderer::onRendererReset(JNIEnv& env)
 
 }
 
-void RoamRenderer::onSurfaceChanged(JNIEnv&, jint width, jint height)
+void RoamRenderer::onSurfaceChanged(JNIEnv& env, jint width, jint height)
 {
+    if (!mRenderer) {
+        // In case the surface has been destroyed (due to app back-grounding)
+        onSurfaceCreated(env);
+    }
+    requestRender();
     Log::Info(Event::Render, "OnSurfaceChange width: %d, height: %d", width, height);
 }
 
@@ -48,29 +53,27 @@ void RoamRenderer::onSurfaceDestroyed(JNIEnv&) {
 
 }
 
-void RoamRenderer::update(std::shared_ptr<GLCamera> camera) {
-    // Lock on the parameters
+void RoamRenderer::update(std::shared_ptr<UpdateParameters> params)
+{    // Lock on the parameters
     std::lock_guard<std::mutex> lock(updateMutex);
-    mCamera = std::move(camera);
-};
+    mUpdateParameters = std::move(params);
+}
 
 
 void RoamRenderer::render(JNIEnv& env)
 {
-    assert (renderer);
-    std::shared_ptr<GLCamera> params;
+    assert (mRenderer);
+    std::shared_ptr<UpdateParameters> params;
     {
         // Lock on the parameters
         std::unique_lock<std::mutex> lock(updateMutex);
-        if (!mCamera) return;
+        if (!mUpdateParameters) return;
 
         // Hold on to the update parameters during render
-        params = mCamera;
+        params = mUpdateParameters;
     }
 
-    renderer->render();
-
-    // todo 这里可以考虑相机参数传过来
+    mRenderer->render(*mUpdateParameters);
 }
 
 void RoamRenderer::registerNative(JNIEnv& env) {

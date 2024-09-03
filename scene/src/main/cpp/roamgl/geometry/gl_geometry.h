@@ -5,7 +5,6 @@
 #ifndef ASSIMPDEMO_GL_GEOMETRY_H
 #define ASSIMPDEMO_GL_GEOMETRY_H
 #include "gl_core.h"
-
 class Geometry {
 public:
     Geometry();

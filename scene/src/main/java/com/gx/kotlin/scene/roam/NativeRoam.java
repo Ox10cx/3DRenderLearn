@@ -13,4 +13,6 @@ public interface NativeRoam {
     void setPitch(double pitch, long duration);
 
     void setZoom(double zoom, @NonNull PointF focalPoint, long duration);
+
+    void resizeView(int width, int height);
 }

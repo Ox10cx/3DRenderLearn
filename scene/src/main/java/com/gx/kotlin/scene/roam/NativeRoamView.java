@@ -19,7 +19,7 @@ public final class NativeRoamView implements NativeRoam {
     public NativeRoamView(final Context context, final RoamRenderer roamRenderer) {
         this.pixelRatio = context.getResources().getDisplayMetrics().density;
         this.mRoamRenderer = roamRenderer;
-        nativeInitialize(this, mRoamRenderer);
+        nativeInitialize(this, mRoamRenderer, pixelRatio);
     }
 
     @Override
@@ -42,10 +42,20 @@ public final class NativeRoamView implements NativeRoam {
         nativeSetZoom(zoom, focalPoint.x / pixelRatio, focalPoint.y / pixelRatio, duration);
     }
 
+    @Override
+    public void resizeView(int width, int height) {
+        width =  (int) Math.ceil(width / pixelRatio);
+        height = (int) Math.ceil(height / pixelRatio);
 
-    private native void nativeInitialize(NativeRoamView nativeRoamView, RoamRenderer mapRenderer);
+        nativeResizeView(width, height);
+    }
+
+
+    private native void nativeInitialize(NativeRoamView nativeRoamView, RoamRenderer mapRenderer, float pixelRatio);
 
     private native void nativeDestroy();
+
+    private native void nativeResizeView(int width, int height);
 
     private native void nativeMoveBy(double deltaX, double deltaY, long duration);
 

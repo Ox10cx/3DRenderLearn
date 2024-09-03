@@ -5,6 +5,7 @@
 #include "renderer.h"
 #include "gl_core.h"
 #include "log.h"
+#include "renderer/update_parameters.h"
 
 
 Renderer::Renderer(AAssetManager *assetManager_, const std::string& pathToInternalDir)
@@ -23,7 +24,7 @@ Renderer::~Renderer()
 
 }
 
-void Renderer::render()
+void Renderer::render(const UpdateParameters& parms)
 {
     GLCall(glClearColor(1.0f, 1.0f, 1.0f, 1.0f));
     // 2 清理画布
@@ -31,6 +32,7 @@ void Renderer::render()
 
     mShader->begin();
     mShader->setUniformValue("sampler", 0);
+    mShader->setUniformValue("projectMatrix", parms.transformState.getProjMatrix());
 
     GLCall(glBindVertexArray(mGeometry->getVao()));
 

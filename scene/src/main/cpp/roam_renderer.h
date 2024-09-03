@@ -8,9 +8,10 @@
 #include <jni/jni.hpp>
 #include <android/asset_manager.h>
 #include "asset_manager.h"
-#include "renderer/renderer.h"
+#include "roamgl/renderer/renderer.h"
 #include "GLCamera.h"
 
+class UpdateParameters;
 
 class RoamRenderer {
 public:
@@ -24,7 +25,8 @@ public:
 
     ~RoamRenderer();
 
-    void update(std::shared_ptr<GLCamera>);
+
+    void update(std::shared_ptr<UpdateParameters>);
 
     void requestRender();
 
@@ -46,9 +48,10 @@ private:
     AAssetManager* mAssetManager;
     std::string mPath;
 
-    std::shared_ptr<GLCamera> mCamera;
     std::mutex updateMutex;
-    std::unique_ptr<Renderer> renderer;
+    std::unique_ptr<Renderer> mRenderer;
+
+    std::shared_ptr<UpdateParameters> mUpdateParameters;
 
 
 };

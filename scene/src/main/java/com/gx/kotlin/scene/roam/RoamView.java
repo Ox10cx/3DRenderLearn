@@ -8,6 +8,7 @@ import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.gx.kotlin.scene.log.Logger;
 import com.gx.kotlin.scene.roam.render.RoamRenderer;
 import com.gx.kotlin.scene.roam.render.glsurfaceview.GLSurfaceViewRoamRenderer;
 import com.gx.kotlin.scene.roam.render.glsurfaceview.RoamGLSurfaceView;
@@ -83,6 +84,14 @@ public class RoamView extends FrameLayout {
             return super.onTouchEvent(event);
         }
         return mRoamGestureDetector.onTouchEvent(event) || super.onTouchEvent(event);
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        if (!isInEditMode() && mNativeRoamView != null) {
+            // null-checking the nativeMapView, see #13277
+            mNativeRoamView.resizeView(w, h);
+        }
     }
 
     public void onStart() {

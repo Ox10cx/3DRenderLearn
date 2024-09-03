@@ -5,16 +5,29 @@
 #include "native_roam_view.h"
 #include "RenderLogger.h"
 #include "roam_renderer.h"
+#include "android_renderer_frontend.h"
+#include "roam/roam_options.h"
 #include "GLCamera.h"
+#include <cmath>
 
 
 NativeRoamView::NativeRoamView(jni::JNIEnv& _env,
                                const jni::Object<NativeRoamView>& obj,
-                               const jni::Object<RoamRenderer>& jMapRender)
+                               const jni::Object<RoamRenderer>& jMapRender,
+                               jni::jfloat _pixelRatio)
                                :mRoamRenderer(RoamRenderer::getNativePeer(_env, jMapRender))
+                               ,mPixelRatio(_pixelRatio)
 {
-    GLCamera camera;
-    mRoamRenderer.update(std::make_shared<GLCamera>(std::move(camera)));
+    mRendererFrontend = std::make_unique<AndroidRendererFrontend>(mRoamRenderer);
+
+    RoamOptions options;
+    options.withSize(Size{ static_cast<uint32_t>(mWidth), static_cast<uint32_t>(mHeight) })
+    .withPixelRatio(mPixelRatio);
+
+    mRoam = std::make_unique<Roam>(*mRendererFrontend, options);
+
+//    GLCamera camera;
+//    mRoamRenderer.update(std::make_shared<GLCamera>(std::move(camera)));
 }
 
 NativeRoamView::~NativeRoamView()
@@ -31,17 +44,26 @@ void NativeRoamView::registerNative(JNIEnv& env) {
 
     // Register the peer
     jni::RegisterNativePeer<NativeRoamView>(env, javaClass, "nativePtr",
-                                            jni::MakePeer<NativeRoamView, const jni::Object<NativeRoamView>&, const jni::Object<RoamRenderer>&>,
+                                            jni::MakePeer<NativeRoamView, const jni::Object<NativeRoamView>&, const jni::Object<RoamRenderer>&, jni::jfloat>,
                                             "nativeInitialize", "nativeDestroy",
+                                            METHOD(&NativeRoamView::resizeView, "nativeResizeView"),
                                             METHOD(&NativeRoamView::moveBy, "nativeMoveBy"),
                                             METHOD(&NativeRoamView::setBearingXY, "nativeSetBearingXY"),
                                             METHOD(&NativeRoamView::setPitch, "nativeSetPitch"),
                                             METHOD(&NativeRoamView::setZoom, "nativeSetZoom"));
 }
 
+
+void NativeRoamView::resizeView(jni::JNIEnv&, int w, int h) {
+    mWidth = std::max(64, w);
+    mHeight = std::max(64, h);
+    mRoam->setSize({ static_cast<uint32_t>(mWidth), static_cast<uint32_t>(mHeight) });
+}
+
+
 void NativeRoamView::moveBy(jni::JNIEnv&, jni::jdouble dx, jni::jdouble dy, jni::jlong duration) {
     LOGI("NativeRoamView moveBy %.2f %.2f ", dx, dy);
-    mRoamRenderer.requestRender();
+    mRoam->moveBy({dx, dy});
 }
 
 void NativeRoamView::setBearingXY(jni::JNIEnv&, jni::jdouble degrees, jni::jdouble cx, jni::jdouble cy, jni::jlong duration) {
