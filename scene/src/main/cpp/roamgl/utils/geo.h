@@ -10,9 +10,12 @@
 #include <cmath>
 #include <stdexcept>
 
+namespace roamgl {
+
 using ScreenCoordinate = geometry::point<double>;
 
 class EdgeInsets {
+
 private:
     double _top;
     double _left;
@@ -67,6 +70,37 @@ public:
     friend bool operator!=(const EdgeInsets& a, const EdgeInsets& b) {
         return !(a == b);
     }
+};
+
+class WayPoint {
+    private:
+        double x;
+        double y;
+
+    public:
+
+    WayPoint(double x_ = 0, double y_ = 0)
+                : x(x_), y(y_) {
+            if (std::isnan(x)) {
+                throw std::domain_error("latitude must not be NaN");
+            }
+            if (std::isnan(y)) {
+                throw std::domain_error("longitude must not be NaN");
+            }
+        }
+
+        double getX() const { return x; }
+        double getY() const { return y; }
+
+        friend bool operator==(const WayPoint& a, const WayPoint& b) {
+            return a.x == b.x && a.y == b.y;
+        }
+
+        friend bool operator!=(const WayPoint& a, const WayPoint& b) {
+            return !(a == b);
+        }
+    };
+
 
 };
 

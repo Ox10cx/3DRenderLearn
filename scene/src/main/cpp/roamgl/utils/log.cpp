@@ -12,7 +12,8 @@
 
 #include <sys/prctl.h>
 
-
+namespace roamgl
+{
 
 std::string Log::getCurrentThreadName() {
     char name[32] = "unknown";
@@ -28,24 +29,24 @@ void Log::record(EventSeverity severity, Event event, const std::string &msg) {
     record(severity, event, -1, msg);
 }
 
-void Log::record(EventSeverity severity, Event event, const char* format, ...) {
+void Log::record(EventSeverity severity, Event event, const char *format, ...) {
     va_list args;
     va_start(args, format);
     char msg[4096];
     vsnprintf(msg, sizeof(msg), format, args);
     va_end(args);
 
-    record(severity, event, -1, std::string{ msg });
+    record(severity, event, -1, std::string{msg});
 }
 
-void Log::record(EventSeverity severity, Event event, int64_t code, const char* format, ...) {
+void Log::record(EventSeverity severity, Event event, int64_t code, const char *format, ...) {
     va_list args;
     va_start(args, format);
     char msg[4096];
     vsnprintf(msg, sizeof(msg), format, args);
     va_end(args);
 
-    record(severity, event, code, std::string{ msg });
+    record(severity, event, code, std::string{msg});
 }
 
 void Log::record(EventSeverity severity, Event event, int64_t code, const std::string &msg) {
@@ -64,4 +65,6 @@ void Log::record(EventSeverity severity, Event event, int64_t code, const std::s
     }
 
     platformRecord(severity, logStream.str());
+}
+
 }

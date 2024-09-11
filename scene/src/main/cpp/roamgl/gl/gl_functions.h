@@ -5,15 +5,16 @@
 #ifndef ASSIMPDEMO_GL_FUNCTIONS_H
 #define ASSIMPDEMO_GL_FUNCTIONS_H
 
-
 #include <cstddef>
+
+namespace roamgl {
 
 #ifdef DEBUG
 //#define GLCall(cmd) ([&]() { struct __ROAMGL_CHECK_ERROR { ~__ROAMGL_CHECK_ERROR() noexcept(false) { GLClearError(); cmd; GLLogCall(#cmd, __FILE__, __LINE__); } } __ROAMGL_CHECK_ERROR; return cmd; }())
 #define GLCall(cmd) ([&]() { \
     struct __ROAMGL_CHECK_ERROR { \
         ~__ROAMGL_CHECK_ERROR() noexcept(false) { \
-            GLLogCall(#cmd, __FILE__, __LINE__); \
+            roamgl::GLLogCall(#cmd, __FILE__, __LINE__); \
         }\
     } __ROAMGL_CHECK_ERROR;\
 return cmd; \
@@ -34,9 +35,11 @@ return cmd; \
 //#define GLCall(x) x;
 //#endif
 
-void GLClearError();
+    void GLClearError();
 
-bool GLLogCall(const char* function, const char* file, int line);
+    bool GLLogCall(const char *function, const char *file, int line);
+
+}
 
 
 #endif //ASSIMPDEMO_GL_FUNCTIONS_H

@@ -9,6 +9,10 @@
 #include <string>
 #include "gl_core.h"
 
+
+namespace roamgl
+{
+
 class Shader {
 public:
     Shader(AAssetManager* assetManager, const std::string &pathToInternalDir, const std::string& vertexPath, const std::string& fragmentPath);
@@ -30,6 +34,10 @@ private:
 private:
     unsigned int mProgram {0};
 };
+
+
+}
+
 
 
 #endif //ASSIMPDEMO_SHADER_H

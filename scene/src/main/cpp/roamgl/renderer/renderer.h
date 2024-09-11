@@ -11,6 +11,9 @@
 #include "texture.h"
 #include "gl_geometry.h"
 
+namespace roamgl
+{
+
 class UpdateParameters;
 
 
@@ -27,6 +30,11 @@ private:
     std::unique_ptr<Texture> mTexture;
 
 };
+
+
+}
+
+
 
 
 #endif //ASSIMPDEMO_RENDERER_H

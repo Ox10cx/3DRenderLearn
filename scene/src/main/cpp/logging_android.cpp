@@ -5,7 +5,7 @@
 #include "roamgl/utils/log.h"
 #include "logger.h"
 
-void Log::platformRecord(EventSeverity severity, const std::string &msg) {
+void roamgl::Log::platformRecord(EventSeverity severity, const std::string &msg) {
     auto env{ android::AttachEnv() };
     Logger::log(*env, severity, msg);
 }

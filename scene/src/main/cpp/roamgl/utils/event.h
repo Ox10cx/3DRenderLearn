@@ -7,6 +7,9 @@
 
 #include <cstdint>
 
+namespace roamgl
+{
+
 enum class EventSeverity : uint8_t {
     Debug,
     Info,
@@ -42,8 +45,10 @@ constexpr Event disabledEvents[] = {
 };
 
 constexpr EventPermutation disabledEventPermutations[] = {
-        { EventSeverity::Debug, Event::Shader }
+        {EventSeverity::Debug, Event::Shader}
 };
+
+}
 
 
 

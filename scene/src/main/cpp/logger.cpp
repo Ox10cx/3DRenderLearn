@@ -11,7 +11,7 @@ void Logger::registerNative(jni::JNIEnv& env)
 
 }
 
-void Logger::log(jni::JNIEnv& env, EventSeverity severity, const std::string& msg)
+void Logger::log(jni::JNIEnv& env, roamgl::EventSeverity severity, const std::string& msg)
 {
     static auto& _class = jni::Class<Logger>::Singleton(env);
 
@@ -19,13 +19,13 @@ void Logger::log(jni::JNIEnv& env, EventSeverity severity, const std::string& ms
     auto message = jni::Make<jni::String>(env, msg);
 
     using Signature = void(jni::String, jni::String);
-    if (severity == EventSeverity::Debug) {
+    if (severity == roamgl::EventSeverity::Debug) {
         auto static debug = _class.GetStaticMethod<Signature>(env, "d");
         _class.Call(env, debug, tag, message);
-    } else if (severity == EventSeverity::Info) {
+    } else if (severity == roamgl::EventSeverity::Info) {
         auto static info = _class.GetStaticMethod<Signature>(env, "i");
         _class.Call(env, info, tag, message);
-    } else if (severity == EventSeverity::Warning) {
+    } else if (severity == roamgl::EventSeverity::Warning) {
         auto static warning = _class.GetStaticMethod<Signature>(env, "w");
         _class.Call(env, warning, tag, message);
     } else {

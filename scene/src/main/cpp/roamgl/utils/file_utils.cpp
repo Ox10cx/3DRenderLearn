@@ -5,6 +5,10 @@
 #include "file_utils.h"
 #include "log.h"
 
+
+namespace roamgl
+{
+
 std::string FileUtils::GetFileName(const std::string& fileName)
 {
     // assume filename is of the form "<path>/<name>.<type>"
@@ -20,8 +24,8 @@ std::string FileUtils::GetFileName(const std::string& fileName)
     return onlyName;
 }
 
- bool FileUtils::ExtractAssetReturnFilename(AAssetManager* assetManage, const std::string& fullPath,
-                                            const std::string& assetPath, bool checkIfFileIsAvailable)
+bool FileUtils::ExtractAssetReturnFilename(AAssetManager* assetManage, const std::string& fullPath,
+                                           const std::string& assetPath, bool checkIfFileIsAvailable)
 {
     FILE* file = fopen(fullPath.c_str(), "rb");
     if (file && checkIfFileIsAvailable) {
@@ -52,6 +56,8 @@ std::string FileUtils::GetFileName(const std::string& fileName)
         Log::Error(Event::File, "Asset not found: %s", assetPath.c_str());
     }
     return result;
+
+}
 
 }
 

@@ -26,7 +26,7 @@ public:
     ~RoamRenderer();
 
 
-    void update(std::shared_ptr<UpdateParameters>);
+    void update(std::shared_ptr<roamgl::UpdateParameters>);
 
     void requestRender();
 
@@ -49,9 +49,9 @@ private:
     std::string mPath;
 
     std::mutex updateMutex;
-    std::unique_ptr<Renderer> mRenderer;
+    std::unique_ptr<roamgl::Renderer> mRenderer;
 
-    std::shared_ptr<UpdateParameters> mUpdateParameters;
+    std::shared_ptr<roamgl::UpdateParameters> mUpdateParameters;
 
 
 };

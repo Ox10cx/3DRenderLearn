@@ -5,6 +5,8 @@ import android.graphics.PointF;
 
 import androidx.annotation.NonNull;
 
+import com.gx.kotlin.scene.camera.CameraPosition;
+import com.gx.kotlin.scene.geometry.WayPoint;
 import com.gx.kotlin.scene.roam.render.RoamRenderer;
 
 public final class NativeRoamView implements NativeRoam {
@@ -50,6 +52,16 @@ public final class NativeRoamView implements NativeRoam {
         nativeResizeView(width, height);
     }
 
+    @Override
+    public CameraPosition getCameraPosition() {
+        return nativeGetCameraPosition();
+    }
+
+    @Override
+    public void jumpTo(@NonNull WayPoint center, double zoom, double pitch, double angle) {
+        nativeJumpTo(angle, center.getX(), center.getY(), pitch, zoom);
+    }
+
 
     private native void nativeInitialize(NativeRoamView nativeRoamView, RoamRenderer mapRenderer, float pixelRatio);
 
@@ -64,6 +76,10 @@ public final class NativeRoamView implements NativeRoam {
     private native void nativeSetPitch(double pitch, long duration);
 
     private native void nativeSetZoom(double zoom, double cx, double cy, long duration);
+
+    private native CameraPosition nativeGetCameraPosition();
+
+    private native void nativeJumpTo(double angle, double x, double y, double pitch, double zoom);
 
 }
 

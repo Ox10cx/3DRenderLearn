@@ -7,10 +7,16 @@
 
 #include "roam/transform_state.h"
 
+namespace roamgl
+{
+
 class UpdateParameters {
 public:
     const TransformState transformState;
 };
+
+}
+
 
 
 #endif //ASSIMPDEMO_UPDATE_PARAMETERS_H

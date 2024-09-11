@@ -9,6 +9,8 @@
 #include "roam/transform.h"
 #include "roam_options.h"
 
+namespace roamgl
+{
 
 class Roam::Impl {
 public:
@@ -24,6 +26,9 @@ public:
     const float mPixelRatio;
 
 };
+
+}
+
 
 
 #endif //ASSIMPDEMO_ROAM_IMPL_H

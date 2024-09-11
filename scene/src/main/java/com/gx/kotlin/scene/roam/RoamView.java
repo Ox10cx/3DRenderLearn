@@ -20,6 +20,8 @@ public class RoamView extends FrameLayout {
     private RoamRenderer mRoamRenderer;
     private NativeRoam mNativeRoamView;
     private RoamGestureDetector mRoamGestureDetector;
+    private Transform mTransform;
+    private DriveRoam mDriveRoam;
 
     public RoamView(@NonNull Context context) {
         super(context);
@@ -67,8 +69,9 @@ public class RoamView extends FrameLayout {
     protected void initialiseRoam() {
         Context context = getContext();
 
-        Transform transform = new Transform(mNativeRoamView);
-        mRoamGestureDetector = new RoamGestureDetector(context, transform);
+        mTransform = new Transform(mNativeRoamView);
+        mRoamGestureDetector = new RoamGestureDetector(context, mTransform);
+        mDriveRoam = new DriveRoam(mNativeRoamView, mTransform);
 
         setClickable(true);
         setLongClickable(true);
@@ -123,5 +126,10 @@ public class RoamView extends FrameLayout {
             mRoamRenderer.onDestroy();
         }
     }
+
+    public Transform getTransform() {
+        return mTransform;
+    }
+
 
 }

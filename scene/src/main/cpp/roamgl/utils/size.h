@@ -8,6 +8,9 @@
 #include <cstdint>
 #include <array>
 
+namespace roamgl
+{
+
 class Size {
 public:
     constexpr Size() = default;
@@ -38,5 +41,8 @@ constexpr inline bool operator==(const Size& a, const Size& b) {
 constexpr inline bool operator!=(const Size& a, const Size& b) {
     return !(a == b);
 }
+
+}
+
 
 #endif //ASSIMPDEMO_SIZE_H

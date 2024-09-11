@@ -16,7 +16,7 @@ public:
 
     static void registerNative(jni::JNIEnv&);
 
-    static void log(jni::JNIEnv&, EventSeverity severity, const std::string& msg);
+    static void log(jni::JNIEnv&, roamgl::EventSeverity severity, const std::string& msg);
 
 };
 

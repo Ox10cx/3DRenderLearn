@@ -5,6 +5,9 @@
 #ifndef ASSIMPDEMO_GL_GEOMETRY_H
 #define ASSIMPDEMO_GL_GEOMETRY_H
 #include "gl_core.h"
+
+namespace roamgl {
+
 class Geometry {
 public:
     Geometry();
@@ -13,7 +16,7 @@ public:
 //    static Geometry* createBox(float size);
 //   static Geometry* createPlane(float width, float height);
 
-   static std::unique_ptr<Geometry> createPlane(float width, float height);
+    static std::unique_ptr<Geometry> createPlane(float width, float height);
 
 
     unsigned int getVao() const {return mVao;}
@@ -26,6 +29,8 @@ private:
     unsigned int mEbo {0};
     uint32_t mIndicesCount {0};
 };
+
+}
 
 
 #endif //ASSIMPDEMO_GL_GEOMETRY_H

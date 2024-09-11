@@ -4,82 +4,85 @@
 
 #include "gl_geometry.h"
 
+namespace roamgl
+{
+
 Geometry::Geometry() {
 
 }
 
 Geometry::~Geometry() {
-    GLCall(glDeleteVertexArrays(1, &mVao));
-    GLCall(glDeleteBuffers(1, &mPosVbo));
-    GLCall(glDeleteBuffers(1, &mUvVbo));
-    GLCall(glDeleteBuffers(1, &mEbo));
+GLCall(glDeleteVertexArrays(1, &mVao));
+GLCall(glDeleteBuffers(1, &mPosVbo));
+GLCall(glDeleteBuffers(1, &mUvVbo));
+GLCall(glDeleteBuffers(1, &mEbo));
 }
 
 std::unique_ptr<Geometry> Geometry::createPlane(float width, float height)
 {
-    auto geometry = std::make_unique<Geometry>();
+auto geometry = std::make_unique<Geometry>();
 
-    geometry->mIndicesCount = 6;
+geometry->mIndicesCount = 6;
 
-    float halfW = width / 2.0f;
-    float halfH = height / 2.0f;
+float halfW = width / 2.0f;
+float halfH = height / 2.0f;
 
-    float positions[] = {
-            -halfW, -halfH, 0.0f,
-            halfW, -halfH, 0.0f,
-            halfW, halfH, 0.0f,
-            -halfW, halfH, 0.0f,
-    };
+float positions[] = {
+        -halfW, -halfH, 0.0f,
+        halfW, -halfH, 0.0f,
+        halfW, halfH, 0.0f,
+        -halfW, halfH, 0.0f,
+};
 
-    float uvs[] = {
-            0.0f, 0.0f,
-            1.0f, 0.0f,
-            1.0f, 1.0f,
-            0.0f, 1.0f
-    };
+float uvs[] = {
+        0.0f, 0.0f,
+        1.0f, 0.0f,
+        1.0f, 1.0f,
+        0.0f, 1.0f
+};
 
-    unsigned int indices[] = {
-            0, 1, 2,
-            2, 3, 0
-    };
+unsigned int indices[] = {
+        0, 1, 2,
+        2, 3, 0
+};
 
-    // 生成VBO
-    unsigned int& posVbo = geometry->mPosVbo;
-    GLCall(glGenBuffers(1, &posVbo));
-    GLCall(glBindBuffer(GL_ARRAY_BUFFER, posVbo));
-    GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(positions), positions, GL_STATIC_DRAW));
+// 生成VBO
+unsigned int& posVbo = geometry->mPosVbo;
+GLCall(glGenBuffers(1, &posVbo));
+GLCall(glBindBuffer(GL_ARRAY_BUFFER, posVbo));
+GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(positions), positions, GL_STATIC_DRAW));
 
-    unsigned int& uvVbo = geometry->mUvVbo;
-    GLCall(glGenBuffers(1, &uvVbo));
-    GLCall(glBindBuffer(GL_ARRAY_BUFFER, uvVbo));
-    GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof (uvs), uvs, GL_STATIC_DRAW));
+unsigned int& uvVbo = geometry->mUvVbo;
+GLCall(glGenBuffers(1, &uvVbo));
+GLCall(glBindBuffer(GL_ARRAY_BUFFER, uvVbo));
+GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof (uvs), uvs, GL_STATIC_DRAW));
 
-    unsigned int& ebo = geometry->mEbo;
-    GLCall(glGenBuffers(1, &ebo));
-    GLCall(glBindBuffer(GL_ARRAY_BUFFER, ebo));
-    GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW));
+unsigned int& ebo = geometry->mEbo;
+GLCall(glGenBuffers(1, &ebo));
+GLCall(glBindBuffer(GL_ARRAY_BUFFER, ebo));
+GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW));
 
-    // 生成VAO
-    unsigned int& vao = geometry->mVao;
-    GLCall(glGenVertexArrays(1, &vao));
-    GLCall(glBindVertexArray(vao));
+// 生成VAO
+unsigned int& vao = geometry->mVao;
+GLCall(glGenVertexArrays(1, &vao));
+GLCall(glBindVertexArray(vao));
 
-    // 绑定VBO
-    GLCall(glBindBuffer(GL_ARRAY_BUFFER, posVbo));
-    GLCall(glEnableVertexAttribArray(0));
-    GLCall(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float ) * 3, (void*) 0));
+// 绑定VBO
+GLCall(glBindBuffer(GL_ARRAY_BUFFER, posVbo));
+GLCall(glEnableVertexAttribArray(0));
+GLCall(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float ) * 3, (void*) 0));
 
-    GLCall(glBindBuffer(GL_ARRAY_BUFFER, uvVbo));
-    GLCall(glEnableVertexAttribArray(1));
-    GLCall(glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof (float) * 2, (void*)0));
+GLCall(glBindBuffer(GL_ARRAY_BUFFER, uvVbo));
+GLCall(glEnableVertexAttribArray(1));
+GLCall(glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof (float) * 2, (void*)0));
 
-    //绑定EBO
-    GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo));
+//绑定EBO
+GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo));
 
-    //解绑VAO
-    GLCall(glBindVertexArray(0));
+//解绑VAO
+GLCall(glBindVertexArray(0));
 
-    return geometry;
+return geometry;
 }
 
 //Geometry* Geometry::createPlane(float width, float height)
@@ -200,3 +203,7 @@ std::unique_ptr<Geometry> Geometry::createPlane(float width, float height)
 //
 //
 //}
+
+}
+
+

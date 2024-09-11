@@ -15,7 +15,7 @@ RoamRenderer::RoamRenderer(jni::JNIEnv& _env,
                            const jni::String& path)
         : javaPeer(_env, obj)
 {
-    Log::Info(Event::Render, " RoamRenderer initialize %s", jni::Make<std::string>(_env, path).c_str());
+    roamgl::Log::Info(roamgl::Event::Render, " RoamRenderer initialize %s", jni::Make<std::string>(_env, path).c_str());
     mAssetManager = AAssetManager_fromJava(&_env, jni::Unwrap(assetManager.get()));
     mPath = jni::Make<std::string>(_env, path);
 
@@ -29,9 +29,9 @@ RoamRenderer::~RoamRenderer()
 
 void RoamRenderer::onSurfaceCreated(JNIEnv& env)
 {
-    Log::Info(Event::Render, "onSurfaceCreated enter");
+    roamgl::Log::Info(roamgl::Event::Render, "onSurfaceCreated enter");
     mRenderer.reset();
-    mRenderer = std::make_unique<Renderer>(mAssetManager, mPath);
+    mRenderer = std::make_unique<roamgl::Renderer>(mAssetManager, mPath);
 }
 
 void RoamRenderer::onRendererReset(JNIEnv& env)
@@ -46,14 +46,14 @@ void RoamRenderer::onSurfaceChanged(JNIEnv& env, jint width, jint height)
         onSurfaceCreated(env);
     }
     requestRender();
-    Log::Info(Event::Render, "OnSurfaceChange width: %d, height: %d", width, height);
+    roamgl::Log::Info(roamgl::Event::Render, "OnSurfaceChange width: %d, height: %d", width, height);
 }
 
 void RoamRenderer::onSurfaceDestroyed(JNIEnv&) {
 
 }
 
-void RoamRenderer::update(std::shared_ptr<UpdateParameters> params)
+void RoamRenderer::update(std::shared_ptr<roamgl::UpdateParameters> params)
 {    // Lock on the parameters
     std::lock_guard<std::mutex> lock(updateMutex);
     mUpdateParameters = std::move(params);
@@ -63,7 +63,7 @@ void RoamRenderer::update(std::shared_ptr<UpdateParameters> params)
 void RoamRenderer::render(JNIEnv& env)
 {
     assert (mRenderer);
-    std::shared_ptr<UpdateParameters> params;
+    std::shared_ptr<roamgl::UpdateParameters> params;
     {
         // Lock on the parameters
         std::unique_lock<std::mutex> lock(updateMutex);

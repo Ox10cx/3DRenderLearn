@@ -9,6 +9,9 @@
 #include "event.h"
 #include <string>
 
+namespace roamgl
+{
+
 class Log {
 
 private:
@@ -62,6 +65,8 @@ private:
     static void platformRecord(EventSeverity severity, const std::string &msg);
 
 };
+
+}
 
 
 

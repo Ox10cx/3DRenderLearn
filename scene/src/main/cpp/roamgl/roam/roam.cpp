@@ -5,21 +5,40 @@
 #include "roam_impl.h"
 #include "roam.h"
 
-Roam::Roam(RendererFrontend &frontend,
-           const RoamOptions& options)
-        : mImpl(std::make_unique<Impl>(frontend, options)) {
-
-}
-
-void Roam::setSize(const Size size) {
-    mImpl->mTransForm.resize(size);
-    mImpl->onUpdate();
-}
-
-void Roam::moveBy(const ScreenCoordinate& point)
+namespace roamgl
 {
-    mImpl->mTransForm.moveBy(point);
-    mImpl->onUpdate();
+
+    Roam::Roam(RendererFrontend &frontend,
+               const RoamOptions& options)
+            : mImpl(std::make_unique<Impl>(frontend, options)) {
+
+    }
+
+    Roam::~Roam() = default;
+
+    void Roam::setSize(const Size size) {
+        mImpl->mTransForm.resize(size);
+        mImpl->onUpdate();
+    }
+
+    void Roam::moveBy(const roamgl::ScreenCoordinate& point)
+    {
+        mImpl->mTransForm.moveBy(point);
+        mImpl->onUpdate();
+    }
+
+    void Roam::easeTo(const roamgl::CameraOptions& camera)
+    {
+        mImpl->mTransForm.easeTo(camera);
+        mImpl->onUpdate();
+    }
+
+
+    roamgl::CameraOptions Roam::getCameraOptions(const roamgl::EdgeInsets& padding)
+    {
+        return mImpl->mTransForm.getCameraOptions(padding);
+    }
+
 }
 
-Roam::~Roam() = default;
+

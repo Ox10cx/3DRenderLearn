@@ -5,6 +5,8 @@
 #include "roam_impl.h"
 #include "renderer/update_parameters.h"
 
+namespace roamgl
+{
 
 Roam::Impl::Impl(RendererFrontend &frontend_,
                  const RoamOptions &roamOptions)
@@ -24,4 +26,6 @@ void Roam::Impl::onUpdate() {
             mTransForm.getState()
     };
     mRendererFrontend.update(std::make_shared<UpdateParameters>(std::move(params)));
+}
+
 }

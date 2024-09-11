@@ -4,6 +4,9 @@ import android.graphics.PointF;
 
 import androidx.annotation.NonNull;
 
+import com.gx.kotlin.scene.camera.CameraPosition;
+import com.gx.kotlin.scene.geometry.WayPoint;
+
 public interface NativeRoam {
 
     void moveBy(double deltaX, double deltaY, long duration);
@@ -15,4 +18,8 @@ public interface NativeRoam {
     void setZoom(double zoom, @NonNull PointF focalPoint, long duration);
 
     void resizeView(int width, int height);
+
+    CameraPosition getCameraPosition();
+
+    void jumpTo(@NonNull WayPoint center, double zoom, double pitch, double bearing);
 }

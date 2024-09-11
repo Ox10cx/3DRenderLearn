@@ -8,6 +8,9 @@
 #include <string>
 #include <android/asset_manager.h>
 
+namespace roamgl
+{
+
 class Texture {
 public:
     Texture();
@@ -23,6 +26,9 @@ private:
     int mHeight {0};
     unsigned int mUnit {0};
 };
+
+}
+
 
 
 #endif //ASSIMPDEMO_TEXTURE_H

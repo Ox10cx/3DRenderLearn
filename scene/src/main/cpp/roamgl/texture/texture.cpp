@@ -8,6 +8,9 @@
 #include "log.h"
 #include "file_utils.h"
 
+namespace roamgl
+{
+
 Texture::Texture()
 {
 
@@ -37,8 +40,8 @@ Texture::Texture(AAssetManager *assetManager, const std::string &pathToInternalD
 
         // 传输纹理数据，开辟显存
         GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, textureImg.cols,
-                     textureImg.rows, 0, GL_RGBA, GL_UNSIGNED_BYTE,
-                     textureImg.data));
+                            textureImg.rows, 0, GL_RGBA, GL_UNSIGNED_BYTE,
+                            textureImg.data));
 
         // 自动生成mipmap
         GLCall(glGenerateMipmap(GL_TEXTURE_2D));
@@ -72,4 +75,6 @@ void Texture::bind()
 void Texture::unBind()
 {
     GLCall(glBindTexture(GL_TEXTURE_2D, 0));
+}
+
 }

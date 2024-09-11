@@ -7,6 +7,9 @@
 
 #include <memory>
 
+namespace roamgl
+{
+
 class UpdateParameters;
 
 class RendererFrontend {
@@ -15,5 +18,8 @@ public:
 
     virtual void update(std::shared_ptr<UpdateParameters>) = 0;
 };
+
+}
+
 
 #endif //ASSIMPDEMO_RENDERER_FRONTEND_H

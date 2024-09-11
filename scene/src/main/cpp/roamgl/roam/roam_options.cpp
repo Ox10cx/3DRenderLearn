@@ -4,6 +4,9 @@
 
 #include "roam_options.h"
 
+namespace roamgl
+{
+
 class RoamOptions::Impl {
 public:
     Size size {64, 64};
@@ -37,4 +40,7 @@ RoamOptions& RoamOptions::withPixelRatio(float ratio)
 float RoamOptions::pixelRatio() const
 {
     return mImpl->pixelRatio;
+}
+
+
 }

@@ -7,25 +7,25 @@
 #include "log.h"
 #include "renderer/update_parameters.h"
 
+namespace roamgl {
 
-Renderer::Renderer(AAssetManager *assetManager_, const std::string& pathToInternalDir)
-{
-    const char* glVersion = GLCall((const char*)glGetString(GL_VERSION));
-    const char* glslVersion = GLCall((const char*)glGetString(GL_SHADING_LANGUAGE_VERSION));
+Renderer::Renderer(AAssetManager *assetManager_, const std::string &pathToInternalDir) {
+    const char *glVersion = GLCall((const char *) glGetString(GL_VERSION));
+    const char *glslVersion = GLCall((const char *) glGetString(GL_SHADING_LANGUAGE_VERSION));
     Log::Info(Event::OpenGL, "OpenGL %s, GLSL %s", glVersion, glslVersion);
 
-    mShader = std::make_unique<Shader>(assetManager_, pathToInternalDir, "shaders/texture.vert", "shaders/texture.frag");
+    mShader = std::make_unique<Shader>(assetManager_, pathToInternalDir, "shaders/texture.vert",
+                                       "shaders/texture.frag");
     mGeometry = std::move(Geometry::createPlane(1.0f, 1.0f));
-    mTexture = std::make_unique<Texture>(assetManager_, pathToInternalDir, "textures/wall.jpg", 0);
+    mTexture = std::make_unique<Texture>(assetManager_, pathToInternalDir, "textures/goku.jpg",
+                                         0);
 }
 
-Renderer::~Renderer()
-{
+Renderer::~Renderer() {
 
 }
 
-void Renderer::render(const UpdateParameters& parms)
-{
+void Renderer::render(const UpdateParameters &parms) {
     GLCall(glClearColor(1.0f, 1.0f, 1.0f, 1.0f));
     // 2 清理画布
     GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
@@ -41,4 +41,6 @@ void Renderer::render(const UpdateParameters& parms)
     GLCall(glBindVertexArray(0));
 
     mShader->end();
+}
+
 }

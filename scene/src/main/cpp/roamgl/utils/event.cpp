@@ -4,21 +4,26 @@
 #include "enum.h"
 #include "event.h"
 
-MBGL_DEFINE_ENUM(EventSeverity, {
-    { EventSeverity::Debug, "DEBUG" },
-    { EventSeverity::Info, "INFO" },
-    { EventSeverity::Warning, "WARNING" },
-    { EventSeverity::Error, "ERROR" },
-    { EventSeverity(-1), "UNKNOWN" },
-});
+namespace roamgl
+{
 
-MBGL_DEFINE_ENUM(Event, {
-    { Event::General, "General" },
-    { Event::Shader, "Shader" },
-    { Event::Render, "Render" },
-    { Event::OpenGL, "OpenGL" },
-    { Event::JNI, "JNI" },
-    { Event::Android, "Android" },
-    { Event::File, "File" },
-    { Event(-1), "Unknown" },
-});
+    MBGL_DEFINE_ENUM(EventSeverity, {
+        { EventSeverity::Debug, "DEBUG" },
+        { EventSeverity::Info, "INFO" },
+        { EventSeverity::Warning, "WARNING" },
+        { EventSeverity::Error, "ERROR" },
+        { EventSeverity(-1), "UNKNOWN" },
+    });
+
+    MBGL_DEFINE_ENUM(Event, {
+        { Event::General, "General" },
+        { Event::Shader, "Shader" },
+        { Event::Render, "Render" },
+        { Event::OpenGL, "OpenGL" },
+        { Event::JNI, "JNI" },
+        { Event::Android, "Android" },
+        { Event::File, "File" },
+        { Event(-1), "Unknown" },
+    });
+
+}

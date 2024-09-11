@@ -8,12 +8,12 @@
 #include "renderer/renderer_frontend.h"
 #include "roam_renderer.h"
 
-class AndroidRendererFrontend : public RendererFrontend {
+class AndroidRendererFrontend : public roamgl::RendererFrontend {
 public:
     AndroidRendererFrontend(RoamRenderer&);
     ~AndroidRendererFrontend() override;
 
-    void update(std::shared_ptr<UpdateParameters>) override;
+    void update(std::shared_ptr<roamgl::UpdateParameters>) override;
 
 private:
     RoamRenderer& roamRenderer;

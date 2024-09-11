@@ -10,6 +10,8 @@
 #include <roam/roam.h>
 #include <memory>
 
+#include "camera_position.h"
+
 class AndroidRendererFrontend;
 class RoamRenderer;
 
@@ -35,6 +37,11 @@ private:
 
     void setZoom(jni::JNIEnv&, jni::jdouble, jni::jdouble, jni::jdouble, jni::jlong);
 
+    jni::Local<jni::Object<CameraPosition>> getCameraPosition(jni::JNIEnv&);
+
+    void jumpTo(jni::JNIEnv&, jni::jdouble bearing, jni::jdouble wayPointX, jni::jdouble wayPointY, jni::jdouble pitch, jni::jdouble zoom);
+
+
 private:
     std::unique_ptr<AndroidRendererFrontend> mRendererFrontend;
     RoamRenderer& mRoamRenderer;
@@ -43,7 +50,8 @@ private:
 
     int mWidth = 64;
     int mHeight = 64;
-    std::unique_ptr<Roam> mRoam;
+    std::unique_ptr<roamgl::Roam> mRoam;
+    roamgl::EdgeInsets insets;
 
 };
 

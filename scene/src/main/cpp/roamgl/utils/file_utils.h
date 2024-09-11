@@ -8,13 +8,20 @@
 #include <string>
 #include <android/asset_manager.h>
 
+namespace roamgl {
+
 class FileUtils {
 public:
-    static bool ExtractAssetReturnFilename(AAssetManager* assetManage, const std::string& fullPath,
-                                           const std::string& assetPath, bool checkIfFileIsAvailable = false);
-    static std::string GetFileName(const std::string& fileName);
+    static bool
+    ExtractAssetReturnFilename(AAssetManager *assetManage, const std::string &fullPath,
+                               const std::string &assetPath,
+                               bool checkIfFileIsAvailable = false);
+
+    static std::string GetFileName(const std::string &fileName);
 
 };
+
+}
 
 
 #endif //ASSIMPDEMO_FILE_UTILS_H

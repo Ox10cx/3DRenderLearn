@@ -20,11 +20,11 @@ NativeRoamView::NativeRoamView(jni::JNIEnv& _env,
 {
     mRendererFrontend = std::make_unique<AndroidRendererFrontend>(mRoamRenderer);
 
-    RoamOptions options;
-    options.withSize(Size{ static_cast<uint32_t>(mWidth), static_cast<uint32_t>(mHeight) })
+    roamgl::RoamOptions options;
+    options.withSize(roamgl::Size{ static_cast<uint32_t>(mWidth), static_cast<uint32_t>(mHeight) })
     .withPixelRatio(mPixelRatio);
 
-    mRoam = std::make_unique<Roam>(*mRendererFrontend, options);
+    mRoam = std::make_unique<roamgl::Roam>(*mRendererFrontend, options);
 
 //    GLCamera camera;
 //    mRoamRenderer.update(std::make_shared<GLCamera>(std::move(camera)));
@@ -50,7 +50,9 @@ void NativeRoamView::registerNative(JNIEnv& env) {
                                             METHOD(&NativeRoamView::moveBy, "nativeMoveBy"),
                                             METHOD(&NativeRoamView::setBearingXY, "nativeSetBearingXY"),
                                             METHOD(&NativeRoamView::setPitch, "nativeSetPitch"),
-                                            METHOD(&NativeRoamView::setZoom, "nativeSetZoom"));
+                                            METHOD(&NativeRoamView::setZoom, "nativeSetZoom"),
+                                            METHOD(&NativeRoamView::getCameraPosition, "nativeGetCameraPosition"),
+                                            METHOD(&NativeRoamView::jumpTo, "nativeJumpTo"));
 }
 
 
@@ -62,21 +64,46 @@ void NativeRoamView::resizeView(jni::JNIEnv&, int w, int h) {
 
 
 void NativeRoamView::moveBy(jni::JNIEnv&, jni::jdouble dx, jni::jdouble dy, jni::jlong duration) {
-    LOGI("NativeRoamView moveBy %.2f %.2f ", dx, dy);
+    LOGI("NativeRoamView moveBy %.2f %.2f", dx, dy);
     mRoam->moveBy({dx, dy});
 }
 
 void NativeRoamView::setBearingXY(jni::JNIEnv&, jni::jdouble degrees, jni::jdouble cx, jni::jdouble cy, jni::jlong duration) {
-    LOGI("NativeRoamView setBearingXY %.2f ", degrees);
-    mRoamRenderer.requestRender();
+    LOGI("NativeRoamView setBearingXY %.2f", degrees);
+    roamgl::ScreenCoordinate anchor(cx, cy);
+    mRoam->easeTo(roamgl::CameraOptions().withBearing(degrees).withAnchor(anchor));
 }
 
 void NativeRoamView::setPitch(jni::JNIEnv&, jni::jdouble pitch, jni::jlong duration) {
     LOGI("NativeRoamView setPitch %.2f ", pitch);
-    mRoamRenderer.requestRender();
+    mRoam->easeTo(roamgl::CameraOptions().withPitch(pitch));
 }
 
 void NativeRoamView::setZoom(jni::JNIEnv&, jni::jdouble zoom, jni::jdouble x, jni::jdouble y, jni::jlong duration) {
     LOGI("NativeRoamView setZoom %.2f ", zoom);
     mRoamRenderer.requestRender();
 }
+
+jni::Local<jni::Object<CameraPosition>> NativeRoamView::getCameraPosition(jni::JNIEnv& env)
+{
+    return CameraPosition::New(env, mRoam->getCameraOptions(insets));
+}
+
+void NativeRoamView::jumpTo(jni::JNIEnv&, jni::jdouble bearing, jni::jdouble wayPointX, jni::jdouble wayPointY, jni::jdouble pitch, jni::jdouble zoom)
+{
+    roamgl::CameraOptions options;
+    if (bearing != -1) {
+        options.bearing = bearing;
+    }
+    options.center = roamgl::WayPoint(wayPointX, wayPointY);
+    if (pitch != -1) {
+        options.pitch = pitch;
+    }
+    if (zoom != -1) {
+        options.zoom = zoom;
+    }
+
+//    map->jumpTo(options);
+
+}
+
