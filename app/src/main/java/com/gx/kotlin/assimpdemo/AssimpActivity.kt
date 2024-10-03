@@ -8,16 +8,20 @@ import com.gx.kotlin.scene.roam.RoamView
 class AssimpActivity : BaseActivity() {
     lateinit var mRenderView : RoamView
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_assimp)
 
         mRenderView = findViewById(R.id.render)
-
+        var i = 1
         findViewById<Button>(R.id.rotate).setOnClickListener(View.OnClickListener {
-
+            var a = 0
 //            mRenderView.transform.setPitch(20.0);
-            mRenderView.transform.setBearing(45.0,1920 / 2.0f + 1920 / 2.0f, 1016 / 2.0f - 1016 / 2.0f);
+//            mRenderView.transform.setBearing(45.0,1920 / 2.0f + 1920 / 4.0f, 1016 / 2.0f)
+//            mRenderView.transform.setBearing(45.0,1920 / 2.0f, 1016 / 2.0f)
+            mRenderView.transform.moveBy(100.0, 75.0, 0)
+            i++
         })
 
 

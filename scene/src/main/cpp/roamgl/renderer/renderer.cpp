@@ -26,7 +26,7 @@ Renderer::~Renderer() {
 }
 
 void Renderer::render(const UpdateParameters &parms) {
-    GLCall(glClearColor(1.0f, 1.0f, 1.0f, 1.0f));
+    GLCall(glClearColor(1.0f, 1.0f, 0.0f, 1.0f));
     // 2 清理画布
     GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 

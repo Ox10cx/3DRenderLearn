@@ -82,10 +82,10 @@ class WayPoint {
     WayPoint(double x_ = 0, double y_ = 0)
                 : x(x_), y(y_) {
             if (std::isnan(x)) {
-                throw std::domain_error("latitude must not be NaN");
+                throw std::domain_error("WayPoint x must not be NaN");
             }
             if (std::isnan(y)) {
-                throw std::domain_error("longitude must not be NaN");
+                throw std::domain_error("WayPoint y must not be NaN");
             }
         }
 

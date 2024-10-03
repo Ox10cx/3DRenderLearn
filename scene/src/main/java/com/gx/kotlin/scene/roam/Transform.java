@@ -18,7 +18,7 @@ public final class Transform {
     }
 
 
-    void moveBy(double offsetX, double offsetY, long duration) {
+    public void moveBy(double offsetX, double offsetY, long duration) {
         mNativeRoam.moveBy(offsetX, offsetY, duration);
     }
 
