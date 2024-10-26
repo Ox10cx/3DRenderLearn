@@ -16,7 +16,7 @@ public:
 //    static Geometry* createBox(float size);
 //   static Geometry* createPlane(float width, float height);
 
-    static std::unique_ptr<Geometry> createPlane(float width, float height);
+    static std::unique_ptr<Geometry> createPlane(float centerX, float centerY, float width, float height);
 
 
     unsigned int getVao() const {return mVao;}

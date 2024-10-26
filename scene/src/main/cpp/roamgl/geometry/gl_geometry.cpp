@@ -18,7 +18,7 @@ GLCall(glDeleteBuffers(1, &mUvVbo));
 GLCall(glDeleteBuffers(1, &mEbo));
 }
 
-std::unique_ptr<Geometry> Geometry::createPlane(float width, float height)
+std::unique_ptr<Geometry> Geometry::createPlane(float centerX, float centerY, float width, float height)
 {
 auto geometry = std::make_unique<Geometry>();
 
@@ -28,10 +28,10 @@ float halfW = width / 2.0f;
 float halfH = height / 2.0f;
 
 float positions[] = {
-        -halfW, -halfH, 0.0f,
-        halfW, -halfH, 0.0f,
-        halfW, halfH, 0.0f,
-        -halfW, halfH, 0.0f,
+        centerX - halfW, centerX - halfH, 0.0f,
+        centerX + halfW, centerX - halfH, 0.0f,
+        centerX + halfW, centerX + halfH, 0.0f,
+        centerX - halfW,centerX + halfH, 0.0f,
 };
 
 float uvs[] = {

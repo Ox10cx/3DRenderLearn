@@ -44,11 +44,13 @@ public:
     double pixel_y() const;
 
     double getZoom() const;
+    float getBearing() const;
+    float getFieldOfView() const;
+    float getCameraToCenterDistance() const;
+    float getPitch() const;
 
-
-public:
-
-    void setBearingXY(double bearing);
+    double zoomScale(double zoom) const;
+    double scaleZoom(double scale) const;
 
     void setPitch(double pitch);
 
@@ -67,32 +69,27 @@ public:
 private:
     void constrain(double& scale, double& x, double& y) const;
 
-
+    ScreenCoordinate getCenterOffset() const;
 
 private:
     double mX{0.0};
     double mY{0.0};
-    double mBearing{0.0};
-    double mScale{1.0};
-    double mFov{45.0f};
+    double mBearing {0.0};
+    double mScale {1.0};
+    // `fov = 2 * arctan((height / 2) / (height * 1.5))`
+    double mFov = 0.6435011087932844;
     double mPitch{0.0f};
 
     Size mSize;
 
     roamgl::EdgeInsets mEdgeInsets;
 
-    glm::vec3 mPosition{0.0f, 0.0f, 1.0f};
-    glm::vec3 mUp{0.0f, 1.0f, 0.0f};
-    glm::vec3 mRight{1.0f, 0.0f, 0.0f};
 
     double minScale = std::pow(2, 0);
     double maxScale = std::pow(2, util::DEFAULT_MAX_ZOOM);
 
     double Bc = Projection::worldSize(mScale);
     double Cc = Projection::worldSize(mScale) ;
-
-
-
 };
 
 

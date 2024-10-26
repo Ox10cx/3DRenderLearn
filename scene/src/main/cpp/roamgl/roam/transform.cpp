@@ -5,10 +5,30 @@
 #include "transform.h"
 #include "utils/log.h"
 #include "utils/constants.h"
+#include "utils/wrap.h"
 
 
 namespace roamgl
 {
+
+static double _normalizeAngle(double angle, double anchorAngle)
+{
+    if (std::isnan(angle) || std::isnan(anchorAngle)) {
+        return 0;
+    }
+
+    angle = util::wrap(angle, -M_PI, M_PI);
+    if (angle == -M_PI) angle = M_PI;
+    double diff = std::abs(angle - anchorAngle);
+    if (std::abs(angle - util::M2PI - anchorAngle) < diff) {
+        angle -= util::M2PI;
+    }
+    if (std::abs(angle + util::M2PI - anchorAngle) < diff) {
+        angle += util::M2PI;
+    }
+
+    return angle;
+}
 
 Transform::Transform()
         : mState() {
@@ -44,41 +64,38 @@ void Transform::moveBy(const ScreenCoordinate &offset) {
 void Transform::easeTo(const CameraOptions &camera) {
     WayPoint startWayPoint = getWayPoint();
     WayPoint endWayPoint = camera.center.value_or(startWayPoint);
+
+    double bearing = camera.bearing ? -*camera.bearing * util::DEG2RAD : getBearing();
+    double pitch = camera.pitch ? *camera.pitch * util::DEG2RAD : getPitch();
+
+    if (std::isnan(bearing) || std::isnan(pitch)) {
+        return;
+    }
+
+    pitch = std::clamp(pitch, util::PITCH_MIN, util::PITCH_MAX);
+
+    bearing = _normalizeAngle(bearing, mState.mBearing);
+    mState.mBearing = _normalizeAngle(mState.mBearing, bearing);
+
+    // 先换算
+    std::optional<ScreenCoordinate> anchor = camera.center ? std::nullopt : camera.anchor;
+    WayPoint anchorWayPoint;
+    if (anchor) {
+        anchor->y = mState.mSize.height - anchor->y;
+        anchorWayPoint = mState.screenCoordinateToWayPoint(*anchor);
+    }
+
     mState.setWayPointZoom(endWayPoint, 0.0f);
 
-//    // 先换算
-//    std::optional<ScreenCoordinate> anchor = camera.center ? std::nullopt : camera.anchor;
-//    WayPoint anchorWayPoint;
-//    if (anchor) {
-//        anchor->y = mState.mSize.height - anchor->y;
-//        anchorWayPoint = mState.screenCoordinateToWayPoint(*anchor);
-//    }
-//
-//    double bearing = camera.bearing ? -*camera.bearing * util::DEG2RAD : getBearing();
-//    if (mState.mBearing != bearing) {
-//        mState.mBearing = bearing;
-//        mState.setBearingXY(bearing);
-//    }
-//
-//    if (anchor) mState.moveWayPoint(anchorWayPoint, *anchor);
+    if (mState.mBearing != bearing) {
+        mState.mBearing = bearing;
+    }
 
-//    const roamgl::ScreenCoordinate& anchor = camera.anchor.value_or(defaultCoordinate);
-//    mState.setBearingXY(anchor, bearing);
+    if (mState.mPitch != pitch) {
+        mState.mPitch = pitch;
+    }
 
-
-//    const ScreenCoordinate defaultCoordinate = mState.mEdgeInsets.getCenter(mState.mSize.width, mState.mSize.height);
-//    const ScreenCoordinate& centerCoordinate = camera.center.value_or(defaultCoordinate);
-//    mState.setScreenCoordinate(centerCoordinate, 0.0f);
-//
-//    double pitch = camera.pitch ? *camera.pitch * util::DEG2RAD : getPitch();
-//    mState.mPitch = pitch;
-//    mState.setPitch(pitch);
-//
-//
-//    double bearing = camera.bearing ? -*camera.bearing * util::DEG2RAD : getBearing();
-//    mState.mBearing = bearing;
-//    const roamgl::ScreenCoordinate& anchor = camera.anchor.value_or(defaultCoordinate);
-//    mState.setBearingXY(anchor, bearing);
+    if (anchor) mState.moveWayPoint(anchorWayPoint, *anchor);
 }
 
 double Transform::getBearing() const

@@ -15,6 +15,10 @@ namespace util
     constexpr double RAD2DEG = 180.0 / M_PI;
 
     constexpr double tileSize = 512;
+    constexpr double M2PI = M_PI * 2;
+
+    constexpr double PITCH_MIN = 0.0;
+    constexpr double PITCH_MAX = M_PI / 3;
 
     constexpr double MIN_ZOOM = 0.0;
     constexpr double MAX_ZOOM = 25.5;

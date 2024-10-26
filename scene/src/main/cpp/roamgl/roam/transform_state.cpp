@@ -22,26 +22,69 @@ TransformState::~TransformState() {
 
 }
 
+float TransformState::getBearing() const
+{
+    return mBearing;
+}
+
+float TransformState::getFieldOfView() const
+{
+    return mFov;
+}
+
+
+float TransformState::getPitch() const
+{
+    return mPitch;
+}
+
+float TransformState::getCameraToCenterDistance() const
+{
+    return 0.5 * mSize.height / std::tan(mFov / 2.0);
+}
+
+ScreenCoordinate TransformState::getCenterOffset() const
+{
+    return { 0.5 * (mEdgeInsets.left() - mEdgeInsets.right()), 0.5 * (mEdgeInsets.top() - mEdgeInsets.bottom()) };
+}
+
 void TransformState::constrain(double& scale_, double& x_, double& y_) const
 {
     const double ratioY = mSize.height / util::tileSize;
     scale_ = std::max(scale_, ratioY);
 
     // 缩放时避免Y方向越界
-    double max_y = (scale_ * util::tileSize - mSize.height) / 2;
-    y_ = std::max(-max_y, std::min(y_, max_y));
+//    double max_y = (scale_ * util::tileSize - mSize.height) / 2;
+//    y_ = std::max(-max_y, std::min(y_, max_y));
 }
 
 
 
 glm::mat4 TransformState::getProjMatrix() const
 {
-    glm::vec3 front = glm::cross(mUp, mRight);
-    glm::vec3 center = front + mPosition;
-    return glm::lookAt(mPosition, center, mUp);
+    glm::mat4 proj{1.0f};
+    getTransMatrix(proj);
+    return proj;
 
-//    glm::mat4 proj{1.0f};
-//    getTransMatrix(proj);
+//    const double cameraToCenterDistance = getCameraToCenterDistance();
+//    auto offset = getCenterOffset();
+//    // See https://github.com/mapbox/mapbox-gl-native/pull/15195 for details.
+//    // See TransformState::fov description: fov = 2 * arctan((height / 2) / (height * 1.5)).
+//    const double tanFovAboveCenter = (mSize.height * 0.5 + offset.y) / (mSize.height * 1.5);
+//    const double tanMultiple = tanFovAboveCenter * std::tan(getPitch());
+//
+//    assert(tanMultiple < 1);
+//    const double furthestDistance = cameraToCenterDistance / (1 - tanMultiple);
+//    float farZ = furthestDistance * 1.01;
+//
+//    glm::mat4 perspectiveMatrix{1.0f};
+//    perspectiveMatrix = glm::perspective(getFieldOfView(), mSize.width / mSize.height * 1.0f, 1.0f, farZ) ;
+//    perspectiveMatrix = glm::translate(perspectiveMatrix, glm::vec3 {0, 0, -cameraToCenterDistance});
+//
+//    proj = glm::rotate(proj, static_cast<float>(getPitch()), glm::vec3 (1.0f, 0.0f, 0.0f));
+//    proj = glm::rotate(proj, static_cast<float>(mBearing), glm::vec3(0.0f, 0.0f, 1.0f));
+//    proj = glm::translate(proj, glm::vec3 {mX, mY, 0});
+//    roamgl::Log::Info(roamgl::Event::Render, "getWayPoint [%.5f %.5f] ", mX, mY);
 //    return proj;
 }
 
@@ -53,17 +96,17 @@ Size TransformState::getSize() const
 
 void TransformState::moveWayPoint(const WayPoint& wayPoint, const ScreenCoordinate& anchor)
 {
-    WayPoint anchorCoord = screenCoordinateToWayPoint(anchor) ;
-    WayPoint centerCoord = getWayPoint();
+    auto centerCoord = Projection::project(getWayPoint(), mScale);
+    auto latLngCoord = Projection::project(wayPoint, mScale);
+    auto anchorCoord = Projection::project(screenCoordinateToWayPoint(anchor), mScale);
 
-    glm::vec3 wayPointVec =  glm::vec3(wayPoint.getX(), wayPoint.getY(), 0.0f);
-    glm::vec3 anchorVec = glm::vec3(anchorCoord.getX(), anchorCoord.getY(), 0.0f);
-    glm::vec3 centerVec = glm::vec3(centerCoord.getX(), centerCoord.getY(), 0.0f);
+    roamgl::Log::Info(roamgl::Event::Render, "NativeRoamView moveWayPoint "
+                                             "[%.5f %.5f]  [%.5f %.5f]  [%.5f %.5f] ",
+                                             getWayPoint().getX(), getWayPoint().getY(),
+                                             wayPoint.getX(), wayPoint.getY(),
+                                             screenCoordinateToWayPoint(anchor).getX(), screenCoordinateToWayPoint(anchor).getY());
 
-    glm::vec3 newCenterVec = centerVec + wayPointVec - anchorVec;
-
-    WayPoint point{newCenterVec.x  , newCenterVec.y};
-    setWayPointZoom(point, getZoom());
+    setWayPointZoom(Projection::unproject(centerCoord + latLngCoord - anchorCoord, mScale), getZoom());
 }
 
 WayPoint TransformState::getWayPoint() const {
@@ -88,7 +131,6 @@ void TransformState::setWayPointZoom(const WayPoint& wayPoint, double zoom)
     };
 
     setScalePoint(newScale, point);
-
 }
 
 void TransformState::setScalePoint(const double newScale, const ScreenCoordinate& point)
@@ -101,32 +143,9 @@ void TransformState::setScalePoint(const double newScale, const ScreenCoordinate
     mX = constrainedPoint.x;
     mY = constrainedPoint.y;
 
-    mPosition = glm::vec3{-mX, -mY, 1.0f};
 
     roamgl::Log::Info(roamgl::Event::Render, "NativeRoamView setScalePoint "
                                              "[%.5f %.5f] [%.5f %.5f %.5f] ", point.x, point.y, mX, mY, mScale);
-}
-
-
-
-void TransformState::setBearingXY(double bearing)
-{
-    glm::mat4 rotationMatrix{1.0f};
-    rotationMatrix = glm::rotate(rotationMatrix, (float) bearing, glm::vec3(0.0f, 0.0f, 1.0f));
-
-    glm::vec4 up = glm::vec4(0.0f, 1.0f, 0.0f, 0.0f);
-    glm::vec4 right = glm::vec4(1.0f, 0.0f, 0.0f, 0.0f);
-
-    // 更新Up/mRight向量
-    mUp = rotationMatrix * up;
-    mRight = rotationMatrix * right;
-}
-
-
-void TransformState::setPitch(double pitch) {
-    // 不影响position
-    auto mat = glm::rotate(glm::mat4(1.0f), (float) pitch, mRight);
-    mUp = mat * glm::vec4(mUp, 0.0f);
 }
 
 
@@ -140,8 +159,17 @@ CameraOptions TransformState::getCameraOptions(const EdgeInsets &padding) const 
 }
 
 
+double TransformState::zoomScale(double zoom) const
+{
+    return std::pow(2.0, zoom);
+}
+double TransformState::scaleZoom(double scale) const
+{
+    return std::log2(scale);
+}
+
 double TransformState::getZoom() const {
-    return 0.0;
+    return scaleZoom(mScale);
 }
 
 ScreenCoordinate TransformState::wayPointToScreenCoordinate(const WayPoint& wayPoint) const
@@ -227,8 +255,22 @@ void TransformState::getTransMatrix(glm::mat4& matrix) const
         return;
     }
 
+    const double cameraToCenterDistance = getCameraToCenterDistance();
+    auto offset = getCenterOffset();
+    // See https://github.com/mapbox/mapbox-gl-native/pull/15195 for details.
+    // See TransformState::fov description: fov = 2 * arctan((height / 2) / (height * 1.5)).
+    const double tanFovAboveCenter = (mSize.height * 0.5 + offset.y) / (mSize.height * 1.5);
+    const double tanMultiple = tanFovAboveCenter * std::tan(getPitch());
 
-    matrix = glm::rotate(matrix, static_cast<float>(mBearing), glm::vec3(0.0f, 0.0f, 1.0f));
+    assert(tanMultiple < 1);
+    const double furthestDistance = cameraToCenterDistance / (1 - tanMultiple);
+    float farZ = furthestDistance * 1.01;
+
+//    matrix = glm::perspective(getFieldOfView(), float(mSize.width) / mSize.height, 1.0f, farZ) ;
+    matrix = glm::translate(matrix, glm::vec3 {0, 0, -1.0f});
+
+    matrix = glm::rotate(matrix, static_cast<float>(getPitch()), glm::vec3 (1.0f, 0.0f, 0.0f));
+    matrix = glm::rotate(matrix, static_cast<float>(getBearing()), glm::vec3(0.0f, 0.0f, 1.0f));
 
     const double dx = pixel_x() - mSize.width / 2.0f, dy = pixel_y() - mSize.height / 2.0f;
     matrix = glm::translate(matrix, glm::vec3 {dx, dy, 0});
@@ -247,7 +289,6 @@ double TransformState::pixel_y() const
     const double center = (mSize.height - Projection::worldSize(mScale)) / 2;
     return center + mY;
 }
-
 
 }
 

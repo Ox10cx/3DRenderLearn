@@ -16,7 +16,7 @@ Renderer::Renderer(AAssetManager *assetManager_, const std::string &pathToIntern
 
     mShader = std::make_unique<Shader>(assetManager_, pathToInternalDir, "shaders/texture.vert",
                                        "shaders/texture.frag");
-    mGeometry = std::move(Geometry::createPlane(1.0f, 1.0f));
+    mGeometry = std::move(Geometry::createPlane(0.0, 0.0, 1.0f, 1.0f));
     mTexture = std::make_unique<Texture>(assetManager_, pathToInternalDir, "textures/goku.jpg",
                                          0);
 }
@@ -30,9 +30,14 @@ void Renderer::render(const UpdateParameters &parms) {
     // 2 清理画布
     GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
+    glm::mat4 proj = parms.transformState.getProjMatrix();
+
+    glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3 (300.0, 300.0, 0.0));
+
+
     mShader->begin();
     mShader->setUniformValue("sampler", 0);
-    mShader->setUniformValue("projectMatrix", parms.transformState.getProjMatrix());
+    mShader->setUniformValue("projectMatrix", parms.transformState.getProjMatrix() * model);
 
     GLCall(glBindVertexArray(mGeometry->getVao()));
 

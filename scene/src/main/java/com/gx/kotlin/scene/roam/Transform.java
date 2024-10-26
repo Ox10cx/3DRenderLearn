@@ -26,7 +26,7 @@ public final class Transform {
         mNativeRoam.setBearing(bearing, focalX, focalY, 0);
     }
 
-    void setPitch(double pitch) {
+    public void setPitch(double pitch) {
         mNativeRoam.setPitch(pitch, 0);
     }
 
