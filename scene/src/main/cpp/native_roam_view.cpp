@@ -59,6 +59,7 @@ void NativeRoamView::registerNative(JNIEnv& env) {
 void NativeRoamView::resizeView(jni::JNIEnv&, int w, int h) {
     mWidth = std::max(64, w);
     mHeight = std::max(64, h);
+    LOGI("NativeRoamView resize [%d, %d]", w, h);
     mRoam->setSize({ static_cast<uint32_t>(mWidth), static_cast<uint32_t>(mHeight) });
 }
 

@@ -14,11 +14,16 @@ Renderer::Renderer(AAssetManager *assetManager_, const std::string &pathToIntern
     const char *glslVersion = GLCall((const char *) glGetString(GL_SHADING_LANGUAGE_VERSION));
     Log::Info(Event::OpenGL, "OpenGL %s, GLSL %s", glVersion, glslVersion);
 
-    mShader = std::make_unique<Shader>(assetManager_, pathToInternalDir, "shaders/texture.vert",
-                                       "shaders/texture.frag");
-    mGeometry = std::move(Geometry::createPlane(0.0, 0.0, 1.0f, 1.0f));
-    mTexture = std::make_unique<Texture>(assetManager_, pathToInternalDir, "textures/goku.jpg",
-                                         0);
+//    mShader = std::make_unique<Shader>(assetManager_, pathToInternalDir, "shaders/texture.vert",
+//                                       "shaders/texture.frag");
+//    mGeometry = std::move(Geometry::createPlane(0.0, 0.0, 1.0f, 1.0f));
+//    mTexture = std::make_unique<Texture>(assetManager_, pathToInternalDir, "textures/goku.jpg",
+//                                         0);
+
+
+    mShader = std::make_unique<Shader>(assetManager_, pathToInternalDir, "shaders/line_origin.vert",
+                                       "shaders/line_origin.frag");
+    mGeometry = std::move(Geometry::createLine());
 }
 
 Renderer::~Renderer() {
@@ -26,18 +31,26 @@ Renderer::~Renderer() {
 }
 
 void Renderer::render(const UpdateParameters &parms) {
-    GLCall(glClearColor(1.0f, 1.0f, 0.0f, 1.0f));
+    GLCall(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
     // 2 清理画布
     GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
     glm::mat4 proj = parms.transformState.getProjMatrix();
 
-    glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3 (300.0, 300.0, 0.0));
+    glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3 (299.5, 300.0, 0.0));
 
+
+//    mShader->begin();
+//    mShader->setUniformValue("sampler", 0);
+//    mShader->setUniformValue("projectMatrix", parms.transformState.getProjMatrix() * model);
 
     mShader->begin();
-    mShader->setUniformValue("sampler", 0);
     mShader->setUniformValue("projectMatrix", parms.transformState.getProjMatrix() * model);
+    mShader->setUniformValue("u_halfheight", 600 / 2.0f);
+    mShader->setUniformValue("u_width", 0.001f);
+    mShader->setUniformValue("u_gapwidth", 0.01f);
+    mShader->setUniformValue("u_color", glm::vec4 {1.0f, 1.0f, 1.0f, 1.0f});
+
 
     GLCall(glBindVertexArray(mGeometry->getVao()));
 

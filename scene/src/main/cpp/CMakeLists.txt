@@ -12,6 +12,8 @@ project("scene")
 # 增加预定义宏
 add_definitions(-DDEBUG)
 
+SET(CMAKE_BUILD_TYPE "Debug")
+
 set(jnilibs "${CMAKE_SOURCE_DIR}/../jniLibs")
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -fexceptions -frtti")
