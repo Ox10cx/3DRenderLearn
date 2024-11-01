@@ -121,6 +121,14 @@ void Shader::setUniformValue(const std::string &name, float *value) {
     GLCall(glUniform3fv(locaiton, 1, value));
 }
 
+
+void Shader::setUniformValue(const std::string &name, const glm::vec2 &value) {
+    // 通过名称拿到Uniform的位置
+    GLuint locaiton = GLCall(glGetUniformLocation(mProgram, name.c_str()));
+    // 通过location来更新Uniform变量
+    GLCall(glUniform2f(locaiton, value.x, value.y));
+}
+
 void Shader::setUniformValue(const std::string &name, const glm::vec3 &value) {
     // 通过名称拿到Uniform的位置
     GLuint locaiton = GLCall(glGetUniformLocation(mProgram, name.c_str()));
@@ -128,6 +136,15 @@ void Shader::setUniformValue(const std::string &name, const glm::vec3 &value) {
     // 通过location来更新Uniform变量
     GLCall(glUniform3f(locaiton, value.x, value.y, value.z));
 }
+
+void Shader::setUniformValue(const std::string &name, const glm::vec4 &value) {
+    // 通过名称拿到Uniform的位置
+    GLuint locaiton = GLCall(glGetUniformLocation(mProgram, name.c_str()));
+
+    // 通过location来更新Uniform变量
+    GLCall(glUniform4f(locaiton, value.x, value.y, value.z, value.w));
+}
+
 
 void Shader::setUniformValue(const std::string &name, int value) {
     // 通过名称拿到Uniform的位置

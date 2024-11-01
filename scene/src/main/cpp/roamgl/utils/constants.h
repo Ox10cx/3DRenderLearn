@@ -11,6 +11,10 @@ namespace roamgl
 
 namespace util
 {
+
+
+    constexpr int32_t EXTENT = 8192;
+
     constexpr double DEG2RAD = M_PI / 180.0;
     constexpr double RAD2DEG = 180.0 / M_PI;
 

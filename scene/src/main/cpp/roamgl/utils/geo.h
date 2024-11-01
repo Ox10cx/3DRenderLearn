@@ -5,10 +5,10 @@
 #ifndef ASSIMPDEMO_GEO_H
 #define ASSIMPDEMO_GEO_H
 
-#include "geometry/point.h"
-#include "geometry/point_arithmetic.h"
 #include <cmath>
 #include <stdexcept>
+#include "geometry/point.h"
+#include "geometry/point_arithmetic.h"
 
 namespace roamgl {
 
