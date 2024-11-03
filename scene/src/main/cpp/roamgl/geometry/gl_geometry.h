@@ -20,6 +20,10 @@ public:
     static std::unique_ptr<Geometry> createPlane(float centerX, float centerY, float width, float height);
     static std::unique_ptr<Geometry> createLine();
 
+    static std::unique_ptr<Geometry> createLine2();
+    static std::unique_ptr<Geometry> createLine3();
+    static std::unique_ptr<Geometry> createLine4();
+
 
     unsigned int getVao() const {return mVao;}
     uint32_t getIndicesCount() const { return mIndicesCount;}

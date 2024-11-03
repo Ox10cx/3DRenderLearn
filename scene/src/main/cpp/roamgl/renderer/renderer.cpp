@@ -23,9 +23,13 @@ namespace roamgl {
 //        mShader = std::make_unique<Shader>(assetManager_, pathToInternalDir, "shaders/line_origin.vert",
 //                                           "shaders/line_origin.frag");
 
-        mShader = std::make_unique<Shader>(assetManager_, pathToInternalDir, "shaders/line2.vert",
-                                           "shaders/line2.frag");
-        mGeometry = std::move(Geometry::createLine());
+        mShader = std::make_unique<Shader>(assetManager_, pathToInternalDir, "shaders/line_osg.vert",
+                                           "shaders/line_osg.frag");
+        mGeometry = std::move(Geometry::createLine4());
+
+//        mShader = std::make_unique<Shader>(assetManager_, pathToInternalDir, "shaders/white.vert",
+//                                           "shaders/white.frag");
+//        mGeometry = std::move(Geometry::createPlane(0.0, 0.0, 1.0f, 1.0f));
     }
 
     Renderer::~Renderer() {
@@ -39,12 +43,14 @@ namespace roamgl {
 
         glm::mat4 proj = parms.transformState.getProjMatrix();
 
-        glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3 (299.5, 300.0, 0.0));
+        glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3 (glm::vec3 (299.5, 300.0, 0.0)));
+//        glm::mat4 model = glm::scale(glm::mat4(1.0f), glm::vec3 (1 / 1000.0, 1 / 1000.0, 0.0));
+//        model = glm::translate(model, glm::vec3 (299.5, 300.0, 0.0));
 
 
 //    mShader->begin();
-//    mShader->setUniformValue("sampler", 0);
-//    mShader->setUniformValue("projectMatrix", parms.transformState.getProjMatrix() * model);
+////    mShader->setUniformValue("sampler", 0);
+//    mShader->setUniformValue("projectMatrix",  model);
 
 //        mShader->begin();
 //        mShader->setUniformValue("projectMatrix", parms.transformState.getProjMatrix() * model);
@@ -79,13 +85,14 @@ namespace roamgl {
 //        u_blur = 0.0
 //        u_opacity = 1.0
 
-
+//
         mShader->begin();
-        mShader->setUniformValue("u_matrix", parms.transformState.getProjMatrix() * model);
-        mShader->setUniformValue("u_ratio", 0.0625f);
-        mShader->setUniformValue("u_units_to_pixels", glm::vec2{2.0f  / 800, -2.0f / 600});
-        mShader->setUniformValue("u_device_pixel_ratio", 1.0f);
+        mShader->setUniformValue("u_matrix",  parms.transformState.getProjMatrix() * model);
+        mShader->setUniformValue("u_ratio", 0.625f);
+        mShader->setUniformValue("u_units_to_pixels", glm::vec2{1.0f / 0.0027777778450399637, 1.0f / -0.0014064697315916419});
+        mShader->setUniformValue("u_device_pixel_ratio", 2.0f);
 
+        mShader->setUniformValue("u_half_height", 700.0f);
         mShader->setUniformValue("u_gapwidth", 0.0f);
         mShader->setUniformValue("u_offset", 0.0f);
         mShader->setUniformValue("u_width", 0.01f);
@@ -97,7 +104,7 @@ namespace roamgl {
 
         GLCall(glBindVertexArray(mGeometry->getVao()));
 
-        GLCall(glDrawElements(GL_TRIANGLES, mGeometry->getIndicesCount(), GL_UNSIGNED_SHORT, 0));
+        GLCall(glDrawElements(GL_TRIANGLES, mGeometry->getIndicesCount(), GL_UNSIGNED_INT, 0));
 
         GLCall(glBindVertexArray(0));
 

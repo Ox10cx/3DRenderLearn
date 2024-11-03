@@ -31,20 +31,352 @@ Geometry::~Geometry() {
     }
 }
 
+std::unique_ptr<Geometry> Geometry::createLine4()
+{
+    auto geometry = std::make_unique<Geometry>();
+
+
+    float poses[] = {
+            1.00000, 0.00000,
+            1.00000, 0.00000,
+            0.00000, 0.00000,
+            0.00000, 0.00000,
+            0.00000, 1.00000,
+            0.00000, 1.00000
+    };
+
+    float datas[] = {
+            2.00000, 0.00000,
+            2.00000, 1.00000,
+            0.00000, 0.00000,
+            0.00000,  1.00000,
+            0.00000, 2.00000,
+            0.00000, 3.00000,
+    };
+
+    float normales[] = {
+            128.00000,  65.00000,
+            128.00000, 191.00000,
+            65.00000, 65.00000,
+            191.00000,  191.00000,
+            65.00000, 128.00000,
+            191.00000, 128.00000,
+    };
+
+    float dires[] = {
+            1.00000, 0.00000,
+            1.00000, 0.00000,
+            1.0, 0.0,
+            1.0,  0.0,
+            5.0,   0.0,
+            5.0, 0.0,
+    };
+
+    unsigned int indices[] = {
+            0, 1, 2,
+            1, 2, 3,
+            2, 3, 4,
+            3, 4, 5,
+    };
+
+    geometry->mIndicesCount = sizeof(indices) / sizeof(unsigned int);;
+
+    unsigned int& posVbo = geometry->mPosVbo;
+    GLCall(glGenBuffers(1, &posVbo));
+    GLCall(glBindBuffer(GL_ARRAY_BUFFER, posVbo));
+    GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(poses), poses, GL_STATIC_DRAW));
+
+    unsigned int& dataVbo = geometry->mDataVbo;
+    GLCall(glGenBuffers(1, &dataVbo));
+    GLCall(glBindBuffer(GL_ARRAY_BUFFER, dataVbo));
+    GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(datas), datas, GL_STATIC_DRAW));
+
+    unsigned int& normalVbo = geometry->mNormalVbo;
+    GLCall(glGenBuffers(1, &normalVbo));
+    GLCall(glBindBuffer(GL_ARRAY_BUFFER, normalVbo));
+    GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(normales), normales, GL_STATIC_DRAW));
+
+    unsigned int& dirVbo = geometry->mDirVbo;
+    GLCall(glGenBuffers(1, &dirVbo));
+    GLCall(glBindBuffer(GL_ARRAY_BUFFER, dirVbo));
+    GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(dires), dires, GL_STATIC_DRAW));
+
+
+    unsigned int& ebo = geometry->mEbo;
+    GLCall(glGenBuffers(1, &ebo));
+    GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo));
+    GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW));
+
+    // 生成VAO
+    unsigned int& vao = geometry->mVao;
+    GLCall(glGenVertexArrays(1, &vao));
+    GLCall(glBindVertexArray(vao));
+
+    GLCall(glBindBuffer(GL_ARRAY_BUFFER, posVbo));
+    GLCall(glEnableVertexAttribArray(0));
+    GLCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void *)0));
+
+    GLCall(glBindBuffer(GL_ARRAY_BUFFER, dataVbo));
+    GLCall(glEnableVertexAttribArray(1));
+    GLCall(glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void *)0));
+
+    GLCall(glBindBuffer(GL_ARRAY_BUFFER, normalVbo));
+    GLCall(glEnableVertexAttribArray(2));
+    GLCall(glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void *)0));
+
+    GLCall(glBindBuffer(GL_ARRAY_BUFFER, dirVbo));
+    GLCall(glEnableVertexAttribArray(3));
+    GLCall(glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void *)0));
+
+    //绑定EBO
+    GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo));
+
+    //解绑VAO
+    GLCall(glBindVertexArray(0));
+
+    return geometry;
+}
+
+
+std::unique_ptr<Geometry> Geometry::createLine3()
+{
+    auto geometry = std::make_unique<Geometry>();
+
+
+    float poses[] = {
+            0.00000, 0.00000,
+            0.00000, 0.00000,
+            50.00000, 0.00000,
+            50.00000, 0.00000,
+            50.00000, 50.00000,
+            50.00000, 50.00000
+    };
+
+    float datas[] = {
+            0.00000, 0.00000,
+            0.00000,  1.00000,
+            100.00000, 0.00000,
+            100.00000, 1.00000,
+            100.00000, 100.00000,
+            100.00000, 101.00000,
+    };
+
+    float normales[] = {
+            128.00000, 191.00000,
+            128.00000,  65.00000,
+            65.00000,  191.00000,
+            191.00000, 65.00000,
+            65.00000, 128.00000,
+            191.00000, 128.00000
+    };
+
+    float dires[] = {
+            1.0,  0.0,
+            1.0,  0.0,
+            101.0, 0.0,
+            101.0,  0.0,
+            201.0,   0.0,
+            201.0, 0.0,
+    };
+
+    unsigned int indices[] = {
+            0, 1, 2,
+            1, 2, 3,
+            2, 3, 4,
+            3, 4, 5,
+    };
+
+    geometry->mIndicesCount = sizeof(indices) / sizeof(unsigned int);;
+
+    unsigned int& posVbo = geometry->mPosVbo;
+    GLCall(glGenBuffers(1, &posVbo));
+    GLCall(glBindBuffer(GL_ARRAY_BUFFER, posVbo));
+    GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(poses), poses, GL_STATIC_DRAW));
+
+    unsigned int& dataVbo = geometry->mDataVbo;
+    GLCall(glGenBuffers(1, &dataVbo));
+    GLCall(glBindBuffer(GL_ARRAY_BUFFER, dataVbo));
+    GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(datas), datas, GL_STATIC_DRAW));
+
+    unsigned int& normalVbo = geometry->mNormalVbo;
+    GLCall(glGenBuffers(1, &normalVbo));
+    GLCall(glBindBuffer(GL_ARRAY_BUFFER, normalVbo));
+    GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(normales), normales, GL_STATIC_DRAW));
+
+    unsigned int& dirVbo = geometry->mDirVbo;
+    GLCall(glGenBuffers(1, &dirVbo));
+    GLCall(glBindBuffer(GL_ARRAY_BUFFER, dirVbo));
+    GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(dires), dires, GL_STATIC_DRAW));
+
+
+    unsigned int& ebo = geometry->mEbo;
+    GLCall(glGenBuffers(1, &ebo));
+    GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo));
+    GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW));
+
+    // 生成VAO
+    unsigned int& vao = geometry->mVao;
+    GLCall(glGenVertexArrays(1, &vao));
+    GLCall(glBindVertexArray(vao));
+
+    GLCall(glBindBuffer(GL_ARRAY_BUFFER, posVbo));
+    GLCall(glEnableVertexAttribArray(0));
+    GLCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void *)0));
+
+    GLCall(glBindBuffer(GL_ARRAY_BUFFER, dataVbo));
+    GLCall(glEnableVertexAttribArray(1));
+    GLCall(glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void *)0));
+
+    GLCall(glBindBuffer(GL_ARRAY_BUFFER, normalVbo));
+    GLCall(glEnableVertexAttribArray(2));
+    GLCall(glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void *)0));
+
+    GLCall(glBindBuffer(GL_ARRAY_BUFFER, dirVbo));
+    GLCall(glEnableVertexAttribArray(3));
+    GLCall(glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void *)0));
+
+    //绑定EBO
+    GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo));
+
+    //解绑VAO
+    GLCall(glBindVertexArray(0));
+
+    return geometry;
+}
+
+
+
+std::unique_ptr<Geometry> Geometry::createLine2()
+{
+    auto geometry = std::make_unique<Geometry>();
+
+    GeometryCoordinates coordinates;
+    coordinates.push_back({0, 0});
+    coordinates.push_back({50, 0});
+    coordinates.push_back({50, 50});
+
+
+    LineBucket* lineBucket = geometry->m_pLineBucket;
+    lineBucket->addGeometry(coordinates);
+
+    gfx::VertexVector<LineLayoutVertex> vertices = lineBucket->vertices;
+    gfx::IndexVector<gfx::Triangles> triangles = lineBucket->triangles;
+
+    float poses[] = {
+            0.0,  0.0,
+            0.0,  0.0,
+            50.0, 0.0,
+            50.0, 0.0,
+            50.0, 50.0,
+            50.0,50.0,
+    };
+
+
+
+    float datas[] = {
+            0.0,  0.0,
+            0.0,  1.0,
+            100.0, 0.0,
+            100.0, 1.0,
+            100.0, 100.0,
+            100.0,101.0,
+    };
+
+    float normales[] = {
+            128.0,  191.0,
+            128.0,  65.0,
+            65.0,   191.0,
+            191.0,  65.0,
+            65.0,   128.0,
+            191.0, 128.0,
+    };
+
+    float dires[] = {
+            1.0,  0.0,
+            1.0,  0.0,
+            101.0, 0.0,
+            101.0,  0.0,
+            201.0,   0.0,
+            201.0, 0.0,
+    };
+
+    unsigned int indices[] = {
+            0, 1, 2,
+            1, 2, 3,
+            2, 3, 4,
+            3, 4, 5,
+    };
+
+    geometry->mIndicesCount = sizeof(indices) / sizeof(unsigned int);;
+
+    unsigned int& posVbo = geometry->mPosVbo;
+    GLCall(glGenBuffers(1, &posVbo));
+    GLCall(glBindBuffer(GL_ARRAY_BUFFER, posVbo));
+    GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(poses), poses, GL_STATIC_DRAW));
+
+    unsigned int& dataVbo = geometry->mDataVbo;
+    GLCall(glGenBuffers(1, &dataVbo));
+    GLCall(glBindBuffer(GL_ARRAY_BUFFER, dataVbo));
+    GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(datas), datas, GL_STATIC_DRAW));
+
+    unsigned int& normalVbo = geometry->mNormalVbo;
+    GLCall(glGenBuffers(1, &normalVbo));
+    GLCall(glBindBuffer(GL_ARRAY_BUFFER, normalVbo));
+    GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(normales), normales, GL_STATIC_DRAW));
+
+    unsigned int& dirVbo = geometry->mDirVbo;
+    GLCall(glGenBuffers(1, &dirVbo));
+    GLCall(glBindBuffer(GL_ARRAY_BUFFER, dirVbo));
+    GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(dires), dires, GL_STATIC_DRAW));
+
+
+    unsigned int& ebo = geometry->mEbo;
+    GLCall(glGenBuffers(1, &ebo));
+    GLCall(glBindBuffer(GL_ARRAY_BUFFER, ebo));
+    GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW));
+
+    // 生成VAO
+    unsigned int& vao = geometry->mVao;
+    GLCall(glGenVertexArrays(1, &vao));
+    GLCall(glBindVertexArray(vao));
+
+    GLCall(glBindBuffer(GL_ARRAY_BUFFER, posVbo));
+    GLCall(glEnableVertexAttribArray(0));
+    GLCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void *)0));
+
+    GLCall(glBindBuffer(GL_ARRAY_BUFFER, dataVbo));
+    GLCall(glEnableVertexAttribArray(1));
+    GLCall(glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void *)0));
+
+    GLCall(glBindBuffer(GL_ARRAY_BUFFER, normalVbo));
+    GLCall(glEnableVertexAttribArray(2));
+    GLCall(glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void *)0));
+
+    GLCall(glBindBuffer(GL_ARRAY_BUFFER, dirVbo));
+    GLCall(glEnableVertexAttribArray(3));
+    GLCall(glVertexAttribPointer(3, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void *)0));
+
+    //绑定EBO
+    GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo));
+
+    //解绑VAO
+    GLCall(glBindVertexArray(0));
+
+    return geometry;
+}
 
 std::unique_ptr<Geometry> Geometry::createLine()
 {
     auto geometry = std::make_unique<Geometry>();
 
     GeometryCoordinates coordinates;
-//    coordinates.push_back({2760, 3692});
-//    coordinates.push_back({1848, 5176});
+    coordinates.push_back({0, 0});
+    coordinates.push_back({50, 0});
 //    coordinates.push_back({2768, 5020});
 //    coordinates.push_back({2224, 6624});
 //    coordinates.push_back({1431, 10240});
 
-    coordinates.push_back({0, 0});
-    coordinates.push_back({1, 1});
+
     LineBucket* lineBucket = geometry->m_pLineBucket;
     lineBucket->addGeometry(coordinates);
 
@@ -283,17 +615,22 @@ std::unique_ptr<Geometry> Geometry::createPlane(float centerX, float centerY, fl
     positions.push_back(glm::vec3 (centerX - halfW, centerX + halfH, 0.0f));
 
 
-    float uvs[] = {
-            0.0f, 0.0f,
-            1.0f, 0.0f,
-            1.0f, 1.0f,
-            0.0f, 1.0f
-    };
+
+
+//    float uvs[] = {
+//            0.0f, 0.0f,
+//            1.0f, 0.0f,
+//            1.0f, 1.0f,
+//            0.0f, 1.0f
+//    };
 
     unsigned int indices[] = {
             0, 1, 2,
             2, 3, 0
     };
+
+
+    geometry->mIndicesCount = sizeof(indices) / sizeof(unsigned int);;
 
     // 生成VBO
     unsigned int& posVbo = geometry->mPosVbo;
@@ -302,15 +639,15 @@ std::unique_ptr<Geometry> Geometry::createPlane(float centerX, float centerY, fl
 //    GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(positions), positions, GL_STATIC_DRAW));
     GLCall(glBufferData(GL_ARRAY_BUFFER, positions.size() * sizeof (float) * 3, positions.data(), GL_STATIC_DRAW));
 
-    unsigned int& uvVbo = geometry->mUvVbo;
-    GLCall(glGenBuffers(1, &uvVbo));
-    GLCall(glBindBuffer(GL_ARRAY_BUFFER, uvVbo));
-    GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof (uvs), uvs, GL_STATIC_DRAW));
+//    unsigned int& uvVbo = geometry->mUvVbo;
+//    GLCall(glGenBuffers(1, &uvVbo));
+//    GLCall(glBindBuffer(GL_ARRAY_BUFFER, uvVbo));
+//    GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof (uvs), uvs, GL_STATIC_DRAW));
 
     unsigned int& ebo = geometry->mEbo;
     GLCall(glGenBuffers(1, &ebo));
-    GLCall(glBindBuffer(GL_ARRAY_BUFFER, ebo));
-    GLCall(glBufferData(GL_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW));
+    GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo));
+    GLCall(glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW));
 
     // 生成VAO
     unsigned int& vao = geometry->mVao;
@@ -322,9 +659,9 @@ std::unique_ptr<Geometry> Geometry::createPlane(float centerX, float centerY, fl
     GLCall(glEnableVertexAttribArray(0));
     GLCall(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float ) * 3, (void*) 0));
 
-    GLCall(glBindBuffer(GL_ARRAY_BUFFER, uvVbo));
-    GLCall(glEnableVertexAttribArray(1));
-    GLCall(glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof (float) * 2, (void*)0));
+//    GLCall(glBindBuffer(GL_ARRAY_BUFFER, uvVbo));
+//    GLCall(glEnableVertexAttribArray(1));
+//    GLCall(glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof (float) * 2, (void*)0));
 
     //绑定EBO
     GLCall(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo));

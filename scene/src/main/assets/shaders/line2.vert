@@ -1,5 +1,6 @@
 #version 300 es
 
+precision mediump float;
 
 // floor(127 / 2) 等于 63.0
 // 目前允许的最大斜接限制是 2.0。挤出法线存储在一个字节中（-128..127）。
@@ -21,9 +22,9 @@ uniform mediump float u_gapwidth;
 uniform lowp float u_offset;
 uniform mediump float u_width;
 
-out vec2 v_normal;
-out vec2 v_width2;
-out float v_gamma_scale;
+out mediump vec2 v_normal;
+out mediump vec2 v_width2;
+out mediump float v_gamma_scale;
 out highp float v_linesofar;
 
 
