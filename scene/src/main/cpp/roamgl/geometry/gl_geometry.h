@@ -23,6 +23,8 @@ public:
     static std::unique_ptr<Geometry> createLine2();
     static std::unique_ptr<Geometry> createLine3();
     static std::unique_ptr<Geometry> createLine4();
+    static std::unique_ptr<Geometry> createLine5();
+        static std::unique_ptr<Geometry> createLine6();
 
 
     unsigned int getVao() const {return mVao;}

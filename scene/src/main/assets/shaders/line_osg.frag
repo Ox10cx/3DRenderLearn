@@ -17,11 +17,13 @@ void main() {
     lowp float blur = u_blur;
     lowp float opacity = u_opacity;
 
+
     mediump float dist = length(v_normal) * v_width2.s;
     mediump float blur2 = (blur + 1.0 / u_device_pixel_ratio) * v_gamma_scale;
+
     mediump float alpha = clamp(min(dist - (v_width2.t - blur2), v_width2.s - dist) / blur2, 0.0, 1.0);
 
     // fragColor = color * (alpha * opacity);
 
-     fragColor = color;
+     fragColor = color * (alpha * opacity);
 }

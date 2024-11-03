@@ -100,7 +100,7 @@ void LineBucket::addGeometry(const GeometryCoordinates& coordinates) {
     std::optional<Distances> lineDistances;
 
     // todo
-    const LineJoinType joinType = LineJoinType::Round;
+    const LineJoinType joinType = LineJoinType::Miter;
 
     const float miterLimit = joinType == LineJoinType::Bevel ? 1.05f : 2.0f;
 
@@ -410,6 +410,9 @@ void LineBucket::addGeometry(const GeometryCoordinates& coordinates) {
 
     segment.vertexLength += vertexCount;
     segment.indexLength += triangleStore.size() * 3;
+
+
+
 }
 
 void LineBucket::addCurrentVertex(const GeometryCoordinate& currentCoordinate,

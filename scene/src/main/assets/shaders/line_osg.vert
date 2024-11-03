@@ -64,5 +64,6 @@ void main() {
     float extrude_length_without_perspective = length(dist);
     float extrude_length_with_perspective = length(projected_extrude.xy / gl_Position.w * u_units_to_pixels);
     v_gamma_scale = extrude_length_without_perspective / extrude_length_with_perspective;
+
     v_width2 = vec2(outset, inset);
 }
