@@ -5,6 +5,7 @@
 #ifndef ASSIMPDEMO_GL_GEOMETRY_H
 #define ASSIMPDEMO_GL_GEOMETRY_H
 #include "gl_core.h"
+#include <vector>
 
 namespace roamgl {
 
@@ -17,6 +18,7 @@ public:
 //   static Geometry* createPlane(float width, float height);
 
     static std::unique_ptr<Geometry> createPlane(float centerX, float centerY, float width, float height);
+    static std::unique_ptr<Geometry> createPlane(std::vector<float> positions);
 
 
     unsigned int getVao() const {return mVao;}

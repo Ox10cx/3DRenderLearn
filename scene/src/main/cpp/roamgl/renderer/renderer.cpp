@@ -2,6 +2,7 @@
 // Created by 龚喜 on 2024/8/26.
 //
 
+#include <vector>
 #include "renderer.h"
 #include "gl_core.h"
 #include "log.h"
@@ -16,9 +17,24 @@ Renderer::Renderer(AAssetManager *assetManager_, const std::string &pathToIntern
 
     mShader = std::make_unique<Shader>(assetManager_, pathToInternalDir, "shaders/texture.vert",
                                        "shaders/texture.frag");
-    mGeometry = std::move(Geometry::createPlane(0.0, 0.0, 1.0f, 1.0f));
+
+    mGeometry = std::move(Geometry::createPlane(0.0, 0.0, 400.0f, 300.0f));
     mTexture = std::make_unique<Texture>(assetManager_, pathToInternalDir, "textures/goku.jpg",
                                          0);
+
+//    Point<double> p1 = Projection::project({ -0.5, -0.5},  1.0);
+//    Point<double> p2 = Projection::project({  0.5, -0.5},  1.0);
+//    Point<double> p3 = Projection::project({  0.5,  0.5},  1.0);
+//    Point<double> p4 = Projection::project({ -0.5,  0.5},  1.0);
+
+//    std::vector<float> pos = {
+//            (float)p1.x, (float)p1.y, 0.0f,
+//            (float)p2.x, (float)p2.y, 0.0f,
+//            (float)p3.x, (float)p3.y, 0.0f,
+//            (float)p4.x, (float)p4.y, 0.0f,
+//    };
+
+//    mGeometry = std::move(Geometry::createPlane(pos));
 }
 
 Renderer::~Renderer() {
@@ -30,14 +46,14 @@ void Renderer::render(const UpdateParameters &parms) {
     // 2 清理画布
     GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
-    glm::mat4 proj = parms.transformState.getProjMatrix();
-
     glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3 (300.0, 300.0, 0.0));
 
+    glm::mat4 proj{1.0f};
+    parms.transformState.getProjMatrix(proj);
 
     mShader->begin();
     mShader->setUniformValue("sampler", 0);
-    mShader->setUniformValue("projectMatrix", parms.transformState.getProjMatrix() * model);
+    mShader->setUniformValue("projectMatrix", proj * model);
 
     GLCall(glBindVertexArray(mGeometry->getVao()));
 

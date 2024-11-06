@@ -28,13 +28,11 @@ public:
 
     Size getSize() const;
 
-    glm::mat4 getProjMatrix() const;
-
     glm::mat4 coordinatePointMatrix() const;
 
     glm::mat4 getPixelMatrix() const;
 
-    void getTransMatrix(glm::mat4& matrix) const;
+    void getProjMatrix(glm::mat4& matrix) const;
 
     CameraOptions getCameraOptions(const EdgeInsets& padding) const;
 
@@ -83,7 +81,6 @@ private:
     Size mSize;
 
     roamgl::EdgeInsets mEdgeInsets;
-
 
     double minScale = std::pow(2, 0);
     double maxScale = std::pow(2, util::DEFAULT_MAX_ZOOM);

@@ -60,34 +60,6 @@ void TransformState::constrain(double& scale_, double& x_, double& y_) const
 
 
 
-glm::mat4 TransformState::getProjMatrix() const
-{
-    glm::mat4 proj{1.0f};
-    getTransMatrix(proj);
-    return proj;
-
-//    const double cameraToCenterDistance = getCameraToCenterDistance();
-//    auto offset = getCenterOffset();
-//    // See https://github.com/mapbox/mapbox-gl-native/pull/15195 for details.
-//    // See TransformState::fov description: fov = 2 * arctan((height / 2) / (height * 1.5)).
-//    const double tanFovAboveCenter = (mSize.height * 0.5 + offset.y) / (mSize.height * 1.5);
-//    const double tanMultiple = tanFovAboveCenter * std::tan(getPitch());
-//
-//    assert(tanMultiple < 1);
-//    const double furthestDistance = cameraToCenterDistance / (1 - tanMultiple);
-//    float farZ = furthestDistance * 1.01;
-//
-//    glm::mat4 perspectiveMatrix{1.0f};
-//    perspectiveMatrix = glm::perspective(getFieldOfView(), mSize.width / mSize.height * 1.0f, 1.0f, farZ) ;
-//    perspectiveMatrix = glm::translate(perspectiveMatrix, glm::vec3 {0, 0, -cameraToCenterDistance});
-//
-//    proj = glm::rotate(proj, static_cast<float>(getPitch()), glm::vec3 (1.0f, 0.0f, 0.0f));
-//    proj = glm::rotate(proj, static_cast<float>(mBearing), glm::vec3(0.0f, 0.0f, 1.0f));
-//    proj = glm::translate(proj, glm::vec3 {mX, mY, 0});
-//    roamgl::Log::Info(roamgl::Event::Render, "getWayPoint [%.5f %.5f] ", mX, mY);
-//    return proj;
-}
-
 
 Size TransformState::getSize() const
 {
@@ -177,13 +149,15 @@ ScreenCoordinate TransformState::wayPointToScreenCoordinate(const WayPoint& wayP
     if (mSize.isEmpty()) {
         return {};
     }
-
-    glm::vec4 pos {wayPoint.getX(), wayPoint.getY(), 0.0, 1.0};
     glm::mat4 mat = coordinatePointMatrix();
+
+    Point<double> pt = Projection::project(wayPoint, mScale) / util::tileSize;
+
+    glm::vec4 pos {pt.x, pt.y, 0.0, 1.0};
 
     pos = mat * pos;
 
-    return {pos.x, mSize.height - pos.y};
+    return { pos[0] / pos[3], mSize.height - pos[1] / pos[3] };
 }
 
 TileCoordinate TransformState::screenCoordinateToTileCoordinate(const ScreenCoordinate& point, uint8_t atZoom) const
@@ -231,7 +205,7 @@ WayPoint TransformState::screenCoordinateToWayPoint(const ScreenCoordinate& poin
 glm::mat4 TransformState::coordinatePointMatrix() const
 {
     glm::mat4 proj{1.0f};
-    getTransMatrix(proj);
+    getProjMatrix(proj);
     proj = glm::scale(proj, glm::vec3 {util::tileSize,  util::tileSize, 1});
     proj = getPixelMatrix() * proj;
     return proj;
@@ -249,7 +223,7 @@ glm::mat4 TransformState::getPixelMatrix() const
     return pixelMat;
 }
 
-void TransformState::getTransMatrix(glm::mat4& matrix) const
+void TransformState::getProjMatrix(glm::mat4& matrix) const
 {
     if (mSize.isEmpty()) {
         return;
@@ -266,8 +240,10 @@ void TransformState::getTransMatrix(glm::mat4& matrix) const
     const double furthestDistance = cameraToCenterDistance / (1 - tanMultiple);
     float farZ = furthestDistance * 1.01;
 
-//    matrix = glm::perspective(getFieldOfView(), float(mSize.width) / mSize.height, 1.0f, farZ) ;
-    matrix = glm::translate(matrix, glm::vec3 {0, 0, -1.0f});
+    matrix = glm::perspective(getFieldOfView(), float(mSize.width) / mSize.height, 1.0f, farZ) ;
+    matrix = glm::scale(matrix, glm::vec3(1.0, -1.0, 1.0));
+
+    matrix = glm::translate(matrix, glm::vec3 {0, 0, -cameraToCenterDistance});
 
     matrix = glm::rotate(matrix, static_cast<float>(getPitch()), glm::vec3 (1.0f, 0.0f, 0.0f));
     matrix = glm::rotate(matrix, static_cast<float>(getBearing()), glm::vec3(0.0f, 0.0f, 1.0f));
@@ -275,7 +251,7 @@ void TransformState::getTransMatrix(glm::mat4& matrix) const
     const double dx = pixel_x() - mSize.width / 2.0f, dy = pixel_y() - mSize.height / 2.0f;
     matrix = glm::translate(matrix, glm::vec3 {dx, dy, 0});
 
-    roamgl::Log::Info(roamgl::Event::Render, "getTransMatrix [%.5f %.5f][%.5f %.5f] ", mX, mY, dx, dy);
+    roamgl::Log::Info(roamgl::Event::Render, "getProjMatrix [%.5f %.5f][%.5f %.5f] ", mX, mY, dx, dy);
 }
 
 double TransformState::pixel_x() const
