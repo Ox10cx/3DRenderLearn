@@ -22,22 +22,19 @@ public:
     }
 
     static WayPoint unproject(const Point<double>& p, double scale) {
-        auto p2 = p / worldSize(scale);
-        return WayPoint {p2.x - 0.5,  0.5 - p2.y};
+        auto p2 = p * util::WAY_POINT_DISTANCE_MAX / worldSize(scale);
+        return WayPoint {p2.x - util::WAY_POINT_X_MAX,  util::WAY_POINT_Y_MAX - p2.y};
     }
 
 private:
     static Point<double> project_(const WayPoint& wayPoint, double worldSize) {
         return Point<double> {
-                0.5 + wayPoint.getX(),
-                0.5 - wayPoint.getY()
-        } * worldSize ;
+                util::WAY_POINT_X_MAX + wayPoint.getX(),
+                util::WAY_POINT_Y_MAX - wayPoint.getY()
+        } * (worldSize / util::WAY_POINT_DISTANCE_MAX) ;
 
     }
-
-
 };
-
 
 }
 

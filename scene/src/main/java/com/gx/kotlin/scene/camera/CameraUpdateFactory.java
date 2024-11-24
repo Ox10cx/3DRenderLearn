@@ -1,33 +1,54 @@
 package com.gx.kotlin.scene.camera;
 
 import android.graphics.Point;
+import android.graphics.PointF;
 
 import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.gx.kotlin.scene.geometry.WayPoint;
+import com.gx.kotlin.scene.geometry.WayPointBounds;
+import com.gx.kotlin.scene.log.Logger;
 import com.gx.kotlin.scene.roam.DriveRoam;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.Arrays;
 
 public final class CameraUpdateFactory {
-
 
     public static CameraUpdate newCameraPosition(@NonNull CameraPosition cameraPosition) {
         return new CameraPositionUpdate(cameraPosition.bearing, cameraPosition.target, cameraPosition.tilt,
                 cameraPosition.zoom);
     }
 
-
     public static CameraUpdate newWayPoint(@NonNull WayPoint point) {
         return new CameraPositionUpdate(-1, point, -1, -1);
+    }
+
+    public static CameraUpdate newWayPointBounds(@NonNull WayPointBounds bounds, int padding) {
+        return newWayPointBounds(bounds, padding, padding, padding, padding);
+    }
+
+
+    public static CameraUpdate newWayPointBounds(@NonNull WayPointBounds bounds, double bearing, double tilt, int padding) {
+        return newWayPointBounds(bounds, bearing, tilt, padding, padding, padding, padding);
+    }
+
+    public static CameraUpdate newWayPointBounds(@NonNull WayPointBounds bounds, int paddingLeft, int paddingTop,
+                                               int paddingRight, int paddingBottom) {
+        return new CameraBoundsUpdate(bounds, null, null, paddingLeft, paddingTop, paddingRight, paddingBottom);
     }
 
 
     public static CameraUpdate newWayPointZoom(@NonNull WayPoint point, double zoom) {
         return new CameraPositionUpdate(-1, point, -1, zoom);
+    }
+
+    public static CameraUpdate newWayPointBounds(@NonNull WayPointBounds bounds, double bearing, double tilt,
+                                                 int paddingLeft, int paddingTop, int paddingRight, int paddingBottom) {
+        return new CameraBoundsUpdate(bounds, bearing, tilt, paddingLeft, paddingTop, paddingRight, paddingBottom);
     }
 
 
@@ -65,6 +86,9 @@ public final class CameraUpdateFactory {
     }
 
 
+    //
+    // CameraUpdate types
+    //
 
     static final class CameraPositionUpdate implements CameraUpdate {
 
@@ -155,28 +179,44 @@ public final class CameraUpdateFactory {
         }
     }
 
+    static final class CameraBoundsUpdate implements CameraUpdate {
 
-    static final class CameraMoveUpdate implements CameraUpdate {
+        private final WayPointBounds bounds;
+        private final int[] padding;
+        private final Double bearing;
+        private final Double tilt;
 
-        private float x;
-        private float y;
+        CameraBoundsUpdate(WayPointBounds bounds, Double bearing, Double tilt, int[] padding) {
+            this.bounds = bounds;
+            this.padding = padding;
+            this.bearing = bearing;
+            this.tilt = tilt;
+        }
 
-        CameraMoveUpdate(float x, float y) {
-            this.x = x;
-            this.y = y;
+        CameraBoundsUpdate(WayPointBounds bounds, Double bearing, Double tilt, int paddingLeft,
+                           int paddingTop, int paddingRight, int paddingBottom) {
+            this(bounds, bearing, tilt, new int[] {paddingLeft, paddingTop, paddingRight, paddingBottom});
+        }
+
+        public WayPointBounds getBounds() {
+            return bounds;
+        }
+
+        public int[] getPadding() {
+            return padding;
         }
 
         @Override
         public CameraPosition getCameraPosition(@NonNull DriveRoam driveRoam) {
-            CameraPosition previousPosition = driveRoam.getCameraPosition();
-            CameraPosition position =
-                    new CameraPosition.Builder()
-                            .target(new WayPoint(x, y))
-                            .zoom(previousPosition.zoom)
-                            .tilt(previousPosition.tilt)
-                            .bearing(previousPosition.bearing)
-                            .build();
-            return position;
+            if (bearing == null && tilt == null) {
+                // use current camera position tilt and bearing
+                return driveRoam.getCameraForWayPointBounds(bounds, padding);
+            } else {
+                // use provided tilt and bearing
+                assert bearing != null;
+                assert tilt != null;
+                return driveRoam.getCameraForWayPointBounds(bounds, padding, bearing, tilt);
+            }
         }
 
         @Override
@@ -188,29 +228,30 @@ public final class CameraUpdateFactory {
                 return false;
             }
 
-            CameraMoveUpdate that = (CameraMoveUpdate) o;
+            CameraBoundsUpdate that = (CameraBoundsUpdate) o;
 
-            if (Float.compare(that.x, x) != 0) {
+            if (!bounds.equals(that.bounds)) {
                 return false;
             }
-            return Float.compare(that.y, y) == 0;
+            return Arrays.equals(padding, that.padding);
         }
 
         @Override
         public int hashCode() {
-            int result = (x != +0.0f ? Float.floatToIntBits(x) : 0);
-            result = 31 * result + (y != +0.0f ? Float.floatToIntBits(y) : 0);
+            int result = bounds.hashCode();
+            result = 31 * result + Arrays.hashCode(padding);
             return result;
         }
 
         @Override
         public String toString() {
-            return "CameraMoveUpdate{"
-                    + "x=" + x
-                    + ", y=" + y
+            return "CameraBoundsUpdate{"
+                    + "bounds=" + bounds
+                    + ", padding=" + Arrays.toString(padding)
                     + '}';
         }
     }
+
 
     static final class ZoomUpdate implements CameraUpdate {
 
@@ -299,7 +340,7 @@ public final class CameraUpdateFactory {
             } else {
                 return new CameraPosition.Builder(cameraPosition)
                         .zoom(transformZoom(cameraPosition.zoom))
-                        .target(new WayPoint(getX(), getY()))
+                        .target(driveRoam.getProjection().fromScreenLocation(new PointF(getX(), getY())))
                         .build();
             }
         }
@@ -349,4 +390,5 @@ public final class CameraUpdateFactory {
                     + '}';
         }
     }
+
 }

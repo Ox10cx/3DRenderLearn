@@ -5,9 +5,13 @@
 #ifndef ASSIMPDEMO_ROAM_H
 #define ASSIMPDEMO_ROAM_H
 #include <memory>
+#include <optional>
+
 #include "utils/geo.h"
 #include "roam/roam_options.h"
+#include "roam/bound_options.h"
 #include "roam/camera.h"
+#include "transform.h"
 
 namespace roamgl
 {
@@ -24,15 +28,29 @@ public:
 
     void moveBy(const roamgl::ScreenCoordinate &);
 
-    void easeTo(const roamgl::CameraOptions &);
+    void jumpTo(const CameraOptions&);
+    void easeTo(const roamgl::CameraOptions&, const AnimationOptions&);
 
-    roamgl::CameraOptions getCameraOptions(const roamgl::EdgeInsets &padding);
+    CameraOptions getCameraOptions(const EdgeInsets& = {}) const;
+
+    void setBounds(const BoundOptions& options);
+
+    BoundOptions getBounds() const;
+
+    ScreenCoordinate pixelForWayPoint(const WayPoint&) const;
+    WayPoint wayPointForPixel(const ScreenCoordinate&) const;
+
+    CameraOptions cameraForWayPointBounds(const WayPointBounds&, const EdgeInsets&, std::optional<double> bearing = {}, std::optional<double> pitch = {}) const;
+    CameraOptions cameraForWayPoints(const std::vector<WayPoint>&, const EdgeInsets&, std::optional<double> bearing = {}, std::optional<double> pitch = {}) const;
+
+
 
 
 protected:
     class Impl;
 
     const std::unique_ptr<Impl> mImpl;
+
 
 };
 

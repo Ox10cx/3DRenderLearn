@@ -16,23 +16,34 @@ class Transform {
 public:
     Transform();
 
+    Transform(const TransformState &state_) :  mState(state_) {}
+
     ~Transform();
 
     void resize(const Size size);
 
     void moveBy(const ScreenCoordinate &offset);
 
-    void easeTo(const CameraOptions &);
+    void easeTo(const CameraOptions&, const AnimationOptions& = {});
 
     const TransformState &getState() const { return mState; }
 
-    CameraOptions getCameraOptions(const EdgeInsets &) const;
+    CameraOptions getCameraOptions(const EdgeInsets&) const;
+    void jumpTo(const CameraOptions&);
 
     double getBearing() const;
 
     double getPitch() const;
 
+    void setWayPointBounds(WayPointBounds);
+    void setMinZoom(double);
+    void setMaxZoom(double);
+
+    double getZoom() const;
+
     WayPoint screenCoordinateToWayPoint(const ScreenCoordinate& point) const;
+
+    ScreenCoordinate wayPointToScreenCoordinate(const WayPoint& wayPoint) const;
 
     WayPoint getWayPoint() const;
 

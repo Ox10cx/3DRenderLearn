@@ -19,6 +19,9 @@ public:
 
     void onUpdate();
 
+    // Map
+    void jumpTo(const CameraOptions&);
+
 public:
     RendererFrontend& mRendererFrontend;
     Transform mTransForm;

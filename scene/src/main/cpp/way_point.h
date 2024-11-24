@@ -9,6 +9,8 @@
 #include "geometry.h"
 #include "utils/geo.h"
 
+namespace android {
+
 class WayPoint {
 public:
 
@@ -23,5 +25,6 @@ public:
     static void registerNative(jni::JNIEnv&);
 };
 
+}
 
 #endif //ASSIMPDEMO_WAY_POINT_H

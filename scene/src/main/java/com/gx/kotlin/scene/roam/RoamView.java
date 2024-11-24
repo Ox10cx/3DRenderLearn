@@ -7,11 +7,15 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.UiThread;
 
-import com.gx.kotlin.scene.log.Logger;
-import com.gx.kotlin.scene.roam.render.RoamRenderer;
-import com.gx.kotlin.scene.roam.render.glsurfaceview.GLSurfaceViewRoamRenderer;
-import com.gx.kotlin.scene.roam.render.glsurfaceview.RoamGLSurfaceView;
+import com.gx.kotlin.scene.roam.renderer.RoamRenderer;
+import com.gx.kotlin.scene.roam.renderer.glsurfaceview.GLSurfaceViewRoamRenderer;
+import com.gx.kotlin.scene.roam.renderer.glsurfaceview.RoamGLSurfaceView;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -20,8 +24,9 @@ public class RoamView extends FrameLayout {
     private RoamRenderer mRoamRenderer;
     private NativeRoam mNativeRoamView;
     private RoamGestureDetector mRoamGestureDetector;
-    private Transform mTransform;
     private DriveRoam mDriveRoam;
+
+    private final RoamCallback mRoamCallback = new RoamCallback();
 
     public RoamView(@NonNull Context context) {
         super(context);
@@ -69,15 +74,20 @@ public class RoamView extends FrameLayout {
     protected void initialiseRoam() {
         Context context = getContext();
 
-        mTransform = new Transform(mNativeRoamView);
-        mRoamGestureDetector = new RoamGestureDetector(context, mTransform);
-        mDriveRoam = new DriveRoam(mNativeRoamView, mTransform);
+
+        Projection proj = new Projection(mNativeRoamView, this);
+        Transform transform = new Transform(mNativeRoamView);
+        mRoamGestureDetector = new RoamGestureDetector(context, transform);
+        mDriveRoam = new DriveRoam(mNativeRoamView, transform, proj);
+
 
         setClickable(true);
         setLongClickable(true);
         setFocusable(true);
         setFocusableInTouchMode(true);
         requestDisallowInterceptTouchEvent(true);
+
+        mRoamCallback.initialised();
     }
 
 
@@ -125,11 +135,53 @@ public class RoamView extends FrameLayout {
         if (mRoamRenderer != null) {
             mRoamRenderer.onDestroy();
         }
+        mRoamCallback.onDestroy();
     }
 
-    public Transform getTransform() {
-        return mTransform;
+    @UiThread
+    public void getRoamAsync(final @NonNull OnRoamReadyCallback callback) {
+        if (mDriveRoam == null) {
+            // Add callback to the list only if the style hasn't loaded, or the drawing surface isn't ready
+            mRoamCallback.addOnMapReadyCallback(callback);
+        } else {
+            callback.onMapReady(mDriveRoam);
+        }
     }
+
+
+    private class RoamCallback {
+        private final List<OnRoamReadyCallback> onMapReadyCallbackList = new ArrayList<>();
+
+        void initialised() {
+            mDriveRoam.onPreMapReady();
+            onMapReady();
+            mDriveRoam.onPostMapReady();
+        }
+
+        private void onMapReady() {
+            if (onMapReadyCallbackList.size() > 0) {
+                Iterator<OnRoamReadyCallback> iterator = onMapReadyCallbackList.iterator();
+                while (iterator.hasNext()) {
+                    OnRoamReadyCallback callback = iterator.next();
+                    if (callback != null) {
+                        // null checking required for #13279
+                        callback.onMapReady(mDriveRoam);
+                    }
+                    iterator.remove();
+                }
+            }
+        }
+
+        void addOnMapReadyCallback(OnRoamReadyCallback callback) {
+            onMapReadyCallbackList.add(callback);
+        }
+
+        void onDestroy() {
+            onMapReadyCallbackList.clear();
+        }
+
+    }
+
 
 
 }

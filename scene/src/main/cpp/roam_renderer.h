@@ -15,7 +15,7 @@ class UpdateParameters;
 
 class RoamRenderer {
 public:
-    static constexpr auto Name() { return "com/gx/kotlin/scene/roam/render/RoamRenderer"; };
+    static constexpr auto Name() { return "com/gx/kotlin/scene/roam/renderer/RoamRenderer"; };
 
     static void registerNative(JNIEnv& env);
 

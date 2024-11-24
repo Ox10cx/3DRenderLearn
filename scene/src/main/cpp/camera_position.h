@@ -8,6 +8,7 @@
 #include <roam/camera.h>
 #include <jni/jni.hpp>
 
+namespace android {
 
 class CameraPosition {
 public:
@@ -19,6 +20,10 @@ public:
 
     static void registerNative(jni::JNIEnv&);
 };
+
+}
+
+
 
 
 

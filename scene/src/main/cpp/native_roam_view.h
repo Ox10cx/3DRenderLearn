@@ -11,6 +11,10 @@
 #include <memory>
 
 #include "camera_position.h"
+#include "pointf.h"
+#include "way_point.h"
+#include "way_point_bounds.h"
+
 
 class AndroidRendererFrontend;
 class RoamRenderer;
@@ -31,15 +35,41 @@ private:
 
     void moveBy(jni::JNIEnv&, jni::jdouble, jni::jdouble, jni::jlong);
 
+    void easeTo(jni::JNIEnv&, jni::jdouble, jni::jdouble, jni::jdouble, jni::jlong, jni::jdouble, jni::jdouble, jni::jboolean);
+
     void setBearingXY(jni::JNIEnv&, jni::jdouble, jni::jdouble, jni::jdouble, jni::jlong);
+
+    jni::jdouble getBearing(jni::JNIEnv&);
 
     void setPitch(jni::JNIEnv&, jni::jdouble, jni::jlong);
 
+    jni::jdouble getPitch(jni::JNIEnv&);
+
     void setZoom(jni::JNIEnv&, jni::jdouble, jni::jdouble, jni::jdouble, jni::jlong);
 
-    jni::Local<jni::Object<CameraPosition>> getCameraPosition(jni::JNIEnv&);
+    jni::jdouble getZoom(jni::JNIEnv&);
+
+    void setMinZoom(jni::JNIEnv&, jni::jdouble);
+
+    jni::jdouble getMinZoom(jni::JNIEnv&);
+
+    void setMaxZoom(jni::JNIEnv&, jni::jdouble);
+
+    jni::jdouble getMaxZoom(jni::JNIEnv&);
+
+    jni::Local<jni::Object<android::CameraPosition>> getCameraPosition(jni::JNIEnv&);
 
     void jumpTo(jni::JNIEnv&, jni::jdouble bearing, jni::jdouble wayPointX, jni::jdouble wayPointY, jni::jdouble pitch, jni::jdouble zoom);
+
+    void setWayPoint(jni::JNIEnv&, jni::jdouble, jni::jdouble, jni::jlong);
+
+    void setWayPointBounds(jni::JNIEnv&, const jni::Object<android::WayPointBounds>&);
+
+    jni::Local<jni::Object<android::CameraPosition>> getCameraForWayPointBounds(jni::JNIEnv&, const jni::Object<android::WayPointBounds>&, double top, double left, double bottom, double right, double bearing, double tilt);
+
+    jni::Local<jni::Object<android::PointF>> pixelForWayPoint(JNIEnv&, jdouble, jdouble);
+
+    jni::Local<jni::Object<android::WayPoint>> wayPointForPixel(JNIEnv&, jfloat, jfloat);
 
 
 private:

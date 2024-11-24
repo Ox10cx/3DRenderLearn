@@ -1,4 +1,4 @@
-package com.gx.kotlin.scene.roam.render.glsurfaceview;
+package com.gx.kotlin.scene.roam.renderer.glsurfaceview;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;

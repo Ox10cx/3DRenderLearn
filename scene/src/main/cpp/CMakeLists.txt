@@ -51,6 +51,7 @@ file(GLOB src-files
         camera/GLCamera.cpp
         model/AssimpLoader.cpp
         model/AssimpModel.cpp
+        pointf.cpp
         *.cpp)
 
 # Creates and names a library, sets it as either STATIC

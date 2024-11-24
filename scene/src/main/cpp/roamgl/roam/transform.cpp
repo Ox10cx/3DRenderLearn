@@ -61,19 +61,20 @@ void Transform::moveBy(const ScreenCoordinate &offset) {
     easeTo(CameraOptions().withCenter(screenCoordinateToWayPoint(pointOnScreen)));
 }
 
-void Transform::easeTo(const CameraOptions &camera) {
+void Transform::easeTo(const CameraOptions& camera, const AnimationOptions& animation) {
     WayPoint startWayPoint = getWayPoint();
     WayPoint endWayPoint = camera.center.value_or(startWayPoint);
 
     double bearing = camera.bearing ? -*camera.bearing * util::DEG2RAD : getBearing();
     double pitch = camera.pitch ? *camera.pitch * util::DEG2RAD : getPitch();
+    double zoom = camera.zoom.value_or(getZoom());
 
-    if (std::isnan(bearing) || std::isnan(pitch)) {
+    if (std::isnan(zoom) || std::isnan(bearing) || std::isnan(pitch)) {
         return;
     }
 
+    zoom = std::clamp(zoom, mState.getMinZoom(), mState.getMaxZoom());
     pitch = std::clamp(pitch, util::PITCH_MIN, util::PITCH_MAX);
-
     bearing = _normalizeAngle(bearing, mState.mBearing);
     mState.mBearing = _normalizeAngle(mState.mBearing, bearing);
 
@@ -85,7 +86,7 @@ void Transform::easeTo(const CameraOptions &camera) {
         anchorWayPoint = mState.screenCoordinateToWayPoint(*anchor);
     }
 
-    mState.setWayPointZoom(endWayPoint, 0.0f);
+    mState.setWayPointZoom(endWayPoint, zoom);
 
     if (mState.mBearing != bearing) {
         mState.mBearing = bearing;
@@ -112,6 +113,15 @@ CameraOptions Transform::getCameraOptions(const EdgeInsets& padding) const {
     return mState.getCameraOptions(padding);
 }
 
+void Transform::jumpTo(const CameraOptions& camera) {
+    easeTo(camera);
+}
+
+ScreenCoordinate Transform::wayPointToScreenCoordinate(const WayPoint& wayPoint) const {
+    ScreenCoordinate point = mState.wayPointToScreenCoordinate(wayPoint);
+    point.y = mState.mSize.height - point.y;
+    return point;
+}
 
 WayPoint Transform::screenCoordinateToWayPoint(const ScreenCoordinate& point) const {
     ScreenCoordinate flippedPoint = point;
@@ -123,6 +133,30 @@ WayPoint Transform::screenCoordinateToWayPoint(const ScreenCoordinate& point) co
 WayPoint Transform::getWayPoint() const
 {
     return mState.getWayPoint();
+}
+
+double Transform::getZoom() const {
+    return mState.getZoom();
+}
+
+void Transform::setWayPointBounds(WayPointBounds bounds)
+{
+    if (!bounds.valid()) {
+        throw std::runtime_error("failed to set bounds: bounds are invalid");
+    }
+    mState.setWayPointBounds(bounds);
+}
+
+void Transform::setMinZoom(const double minZoom)
+{
+    if (std::isnan(minZoom)) return;
+    mState.setMinZoom(minZoom);
+}
+
+void Transform::setMaxZoom(const double maxZoom)
+{
+    if (std::isnan(maxZoom)) return;
+    mState.setMaxZoom(maxZoom);
 }
 
 }

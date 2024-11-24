@@ -7,6 +7,9 @@
 
 #include "geometry/point.h"
 #include "geometry/point_arithmetic.h"
+#include "constants.h"
+
+#include <vector>
 #include <cmath>
 #include <stdexcept>
 
@@ -100,6 +103,99 @@ class WayPoint {
             return !(a == b);
         }
     };
+
+class WayPointBounds {
+public:
+    WayPointBounds()
+            : sw({-util::WAY_POINT_X_MAX, -util::WAY_POINT_Y_MAX}), ne({util::WAY_POINT_X_MAX, util::WAY_POINT_Y_MAX}), bounded(false) {}
+
+    // Return a bounds covering the entire (unwrapped) world.
+    static WayPointBounds world() {
+        return WayPointBounds({-util::WAY_POINT_X_MAX, -util::WAY_POINT_Y_MAX}, {util::WAY_POINT_X_MAX, util::WAY_POINT_Y_MAX});
+    }
+
+    // Return the bounds consisting of the single point.
+    static WayPointBounds singleton(const WayPoint& a) {
+        return WayPointBounds(a, a);
+    }
+
+    // Return the convex hull of two points; the smallest bounds that contains both.
+    static WayPointBounds hull(const WayPoint& a, const WayPoint& b) {
+        WayPointBounds bounds(a, a);
+        bounds.extend(b);
+        return bounds;
+    }
+
+    // Return a bounds that may serve as the identity element for the extend operation.
+    static WayPointBounds empty() {
+        WayPointBounds bounds = world();
+        std::swap(bounds.sw, bounds.ne);
+        return bounds;
+    }
+
+    static WayPointBounds unbounded() {
+        return {};
+    }
+
+    bool valid() const {
+        return (sw.getX() <= ne.getX()) && (sw.getY() <= ne.getY());
+    }
+
+    double south() const { return sw.getY(); }
+    double west()  const { return sw.getX(); }
+    double north() const { return ne.getY(); }
+    double east()  const { return ne.getX(); }
+
+    WayPoint southwest() const { return sw; }
+    WayPoint northeast() const { return ne; }
+    WayPoint southeast() const { return WayPoint(south(), east()); }
+    WayPoint northwest() const { return WayPoint(north(), west()); }
+
+    WayPoint center() const {
+        return WayPoint((sw.getX() + ne.getX()) / 2,
+                      (sw.getY() + ne.getY()) / 2);
+    }
+
+    WayPoint constrain(const WayPoint& p) const;
+
+    void extend(const WayPoint& point) {
+        sw = WayPoint(std::min(point.getX(), sw.getX()),
+                    std::min(point.getY(), sw.getY()));
+        ne = WayPoint(std::max(point.getX(), ne.getX()),
+                    std::max(point.getY(), ne.getY()));
+    }
+
+    void extend(const WayPointBounds& bounds) {
+        extend(bounds.sw);
+        extend(bounds.ne);
+    }
+
+    bool isEmpty() const {
+        return sw.getX() > ne.getX() ||
+               sw.getY() > ne.getY();
+    }
+
+
+private:
+    WayPoint sw;
+    WayPoint ne;
+    bool bounded = true;
+
+    WayPointBounds(WayPoint sw_, WayPoint ne_)
+            : sw(std::move(sw_)), ne(std::move(ne_)) {}
+
+    bool containsX(double x) const;
+    bool containsY(double y) const;
+
+    friend bool operator==(const WayPointBounds& a, const WayPointBounds& b) {
+        return (!a.bounded && !b.bounded) || (a.bounded && b.bounded && a.sw == b.sw && a.ne == b.ne);
+    }
+
+    friend bool operator!=(const WayPointBounds& a, const WayPointBounds& b) {
+        return !(a == b);
+    }
+};
+
 
 
 };

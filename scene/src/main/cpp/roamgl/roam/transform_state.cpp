@@ -91,15 +91,17 @@ void TransformState::setWayPointZoom(const WayPoint& wayPoint, double zoom)
 {
     roamgl::Log::Info(roamgl::Event::Render, "NativeRoamView setWayPointZoom "
                                              "[%.5f %.5f %.5f] ", wayPoint.getX(), wayPoint.getY(), zoom);
+    WayPoint constrained = wayPoint;
+    constrained = mBounds.constrain(wayPoint);
 
-    double newScale = std::clamp(mScale, minScale, maxScale);
+    double newScale = std::clamp(zoomScale(zoom), min_scale, max_scale);
     const double newWorldSize = newScale * util::tileSize;
-    Bc = newWorldSize;
-    Cc = newWorldSize;
+    Bc = newWorldSize / util::WAY_POINT_DISTANCE_MAX;
+    Cc = newWorldSize / util::WAY_POINT_DISTANCE_MAX;
 
     ScreenCoordinate point = {
-            -newWorldSize * wayPoint.getX(),
-            newWorldSize * wayPoint.getY(),
+            -Bc * constrained.getX(),
+             Cc * constrained.getY(),
     };
 
     setScalePoint(newScale, point);
@@ -114,7 +116,8 @@ void TransformState::setScalePoint(const double newScale, const ScreenCoordinate
     mScale = constrainedScale;
     mX = constrainedPoint.x;
     mY = constrainedPoint.y;
-
+    Bc = Projection::worldSize(mScale) / util::WAY_POINT_DISTANCE_MAX;
+    Cc = Projection::worldSize(mScale) / util::WAY_POINT_DISTANCE_MAX;
 
     roamgl::Log::Info(roamgl::Event::Render, "NativeRoamView setScalePoint "
                                              "[%.5f %.5f] [%.5f %.5f %.5f] ", point.x, point.y, mX, mY, mScale);
@@ -144,21 +147,52 @@ double TransformState::getZoom() const {
     return scaleZoom(mScale);
 }
 
-ScreenCoordinate TransformState::wayPointToScreenCoordinate(const WayPoint& wayPoint) const
-{
-    if (mSize.isEmpty()) {
-        return {};
-    }
-    glm::mat4 mat = coordinatePointMatrix();
-
-    Point<double> pt = Projection::project(wayPoint, mScale) / util::tileSize;
-
-    glm::vec4 pos {pt.x, pt.y, 0.0, 1.0};
-
-    pos = mat * pos;
-
-    return { pos[0] / pos[3], mSize.height - pos[1] / pos[3] };
+double TransformState::getScale() const {
+    return mScale;
 }
+
+void TransformState::setWayPointBounds(WayPointBounds bounds_)
+{
+    if (bounds_ != mBounds) {
+        mBounds = bounds_;
+        setWayPointZoom(getWayPoint(), getZoom());
+    }
+}
+
+WayPointBounds TransformState::getWayPointBounds() const
+{
+    return mBounds;
+}
+
+
+void TransformState::setMinZoom(const double minZoom) {
+    if (minZoom <= getMaxZoom()) {
+        min_scale = zoomScale(std::clamp(minZoom, util::MIN_ZOOM, util::MAX_ZOOM));
+    }
+}
+
+double TransformState::getMinZoom() const
+{
+    double curScale = min_scale;
+    double unused_x = mX;
+    double unused_y = mY;
+    constrain(curScale, unused_x, unused_y);
+
+    return scaleZoom(curScale);
+}
+
+void TransformState::setMaxZoom(const double maxZoom)
+{
+    if (maxZoom >= getMinZoom()) {
+        max_scale = zoomScale(std::clamp(maxZoom, util::MIN_ZOOM, util::MAX_ZOOM));
+    }
+}
+
+double TransformState::getMaxZoom() const
+{
+    return scaleZoom(max_scale);
+}
+
 
 TileCoordinate TransformState::screenCoordinateToTileCoordinate(const ScreenCoordinate& point, uint8_t atZoom) const
 {
@@ -194,6 +228,22 @@ TileCoordinate TransformState::screenCoordinateToTileCoordinate(const ScreenCoor
                       coord0.x, coord0.y, p.x, p.y, mScale);
 
     return {{p.x, p.y} };
+}
+
+ScreenCoordinate TransformState::wayPointToScreenCoordinate(const WayPoint& wayPoint) const
+{
+    if (mSize.isEmpty()) {
+        return {};
+    }
+    glm::mat4 mat = coordinatePointMatrix();
+
+    Point<double> pt = Projection::project(wayPoint, mScale) / util::tileSize;
+
+    glm::vec4 pos {pt.x, pt.y, 0.0, 1.0};
+
+    pos = mat * pos;
+
+    return { pos[0] / pos[3], mSize.height - pos[1] / pos[3] };
 }
 
 WayPoint TransformState::screenCoordinateToWayPoint(const ScreenCoordinate& point) const
@@ -247,7 +297,7 @@ void TransformState::getProjMatrix(glm::mat4& matrix) const
 
     matrix = glm::rotate(matrix, static_cast<float>(getPitch()), glm::vec3 (1.0f, 0.0f, 0.0f));
     matrix = glm::rotate(matrix, static_cast<float>(getBearing()), glm::vec3(0.0f, 0.0f, 1.0f));
-
+    // [0, 0] 为原点 到[1, 1] ===》[0, 0] [256, 256]
     const double dx = pixel_x() - mSize.width / 2.0f, dy = pixel_y() - mSize.height / 2.0f;
     matrix = glm::translate(matrix, glm::vec3 {dx, dy, 0});
 

@@ -1,4 +1,4 @@
-package com.gx.kotlin.scene.roam.render.glsurfaceview;
+package com.gx.kotlin.scene.roam.renderer.glsurfaceview;
 
 import static android.opengl.GLSurfaceView.RENDERMODE_WHEN_DIRTY;
 
@@ -7,7 +7,7 @@ import android.opengl.GLSurfaceView;
 
 import androidx.annotation.NonNull;
 
-import com.gx.kotlin.scene.roam.render.RoamRenderer;
+import com.gx.kotlin.scene.roam.renderer.RoamRenderer;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;

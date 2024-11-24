@@ -42,6 +42,16 @@ public:
     double pixel_y() const;
 
     double getZoom() const;
+    double getScale() const;
+
+    void setWayPointBounds(WayPointBounds);
+    WayPointBounds getWayPointBounds() const;
+    void setMinZoom(double);
+    double getMinZoom() const;
+    void setMaxZoom(double) ;
+    double getMaxZoom() const;
+
+
     float getBearing() const;
     float getFieldOfView() const;
     float getCameraToCenterDistance() const;
@@ -65,6 +75,7 @@ public:
     void moveWayPoint(const WayPoint& wayPoint, const ScreenCoordinate& anchor);
 
 private:
+
     void constrain(double& scale, double& x, double& y) const;
 
     ScreenCoordinate getCenterOffset() const;
@@ -80,13 +91,17 @@ private:
 
     Size mSize;
 
-    roamgl::EdgeInsets mEdgeInsets;
+    WayPointBounds mBounds;
 
-    double minScale = std::pow(2, 0);
-    double maxScale = std::pow(2, util::DEFAULT_MAX_ZOOM);
+    EdgeInsets mEdgeInsets;
+
+    double min_scale = std::pow(2, 0);
+    double max_scale = std::pow(2, util::DEFAULT_MAX_ZOOM);
 
     double Bc = Projection::worldSize(mScale);
     double Cc = Projection::worldSize(mScale) ;
+
+
 };
 
 

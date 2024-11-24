@@ -20,6 +20,11 @@ Roam::Impl::~Impl() {
 
 }
 
+void Roam::Impl::jumpTo(const CameraOptions& camera) {
+    mTransForm.jumpTo(camera);
+    onUpdate();
+}
+
 
 void Roam::Impl::onUpdate() {
     UpdateParameters params = {

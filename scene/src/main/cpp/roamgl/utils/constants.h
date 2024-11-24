@@ -14,7 +14,7 @@ namespace util
     constexpr double DEG2RAD = M_PI / 180.0;
     constexpr double RAD2DEG = 180.0 / M_PI;
 
-    constexpr double tileSize = 512;
+    constexpr double tileSize = 256;
     constexpr double M2PI = M_PI * 2;
 
     constexpr double PITCH_MIN = 0.0;
@@ -25,6 +25,10 @@ namespace util
     constexpr float  MIN_ZOOM_F = MIN_ZOOM;
     constexpr float  MAX_ZOOM_F = MAX_ZOOM;
     constexpr uint8_t DEFAULT_MAX_ZOOM = 22;
+
+    constexpr double WAY_POINT_X_MAX = 128;
+    constexpr double WAY_POINT_Y_MAX = 128;
+    constexpr double WAY_POINT_DISTANCE_MAX = 128 * 2;
 }
 
 }

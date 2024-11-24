@@ -13,4 +13,15 @@ public class RoamConstants {
     public static final double MAXIMUM_DIRECTION = 360;
 
     public static final double MINIMUM_DIRECTION = 0;
+
+    public static final double MIN_WRAP_X = -128;
+
+    public static final double MAX_WRAP_X = 128;
+
+    public static final double MIN_Y = -128;
+
+    public static final double MAX_Y = 128;
+
+    public static final int ANIMATION_DURATION = 300;
+
 }

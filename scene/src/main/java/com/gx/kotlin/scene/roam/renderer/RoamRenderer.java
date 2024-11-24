@@ -1,4 +1,4 @@
-package com.gx.kotlin.scene.roam.render;
+package com.gx.kotlin.scene.roam.renderer;
 
 import android.content.Context;
 import android.content.res.AssetManager;
