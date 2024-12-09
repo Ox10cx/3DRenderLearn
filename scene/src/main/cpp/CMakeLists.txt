@@ -34,6 +34,9 @@ include_directories(
         roamgl/gl
         roamgl/renderer
         roamgl/shader
+        roamgl/style
+        roamgl/tile
+        roamgl/roam
         application/camera
         utils
         helper

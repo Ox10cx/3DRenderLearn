@@ -21,7 +21,9 @@ public:
     void end();
     void setUniformValue(const std::string& name, float value);
     void setUniformValue(const std::string& name, float* value);
+    void setUniformValue(const std::string& name, const glm::vec2& value);
     void setUniformValue(const std::string& name, const glm::vec3& value);
+    void setUniformValue(const std::string& name, const glm::vec4& value);
     void setUniformValue(const std::string& name, int value);
     void setUniformValue(const std::string& name, const glm::mat4& value);
     void setUniformValue(const std::string& name, const glm::mat4* value, int count);
